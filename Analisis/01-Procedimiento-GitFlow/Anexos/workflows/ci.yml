@@ -1,0 +1,88 @@
+# Integración continua para el modelo de tronco con ramas de release.
+#
+# Reemplaza al `ci.yml` que trae la aplicación sembrada: aquel solo protege `main`, y este protege
+# además las ramas `release/*`, que es la mitad que faltaba —un cherry-pick que aplica limpio no
+# garantiza que el resultado funcione en el contexto de la release—.
+#
+# No define cómo se corren las pruebas: eso vive en `e2e.yml`, el workflow reutilizable que viene
+# con la aplicación. Acá solo se decide *cuándo* y *con cuánto alcance*.
+name: CI
+
+on:
+  push:
+    branches: [main, 'release/**']
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - '.gitignore'
+  pull_request:
+    branches: [main, 'release/**']
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group:
+
+# Un push nuevo sobre la misma referencia cancela la corrida anterior solo en los pull requests:
+# en `main` y en las releases conviene conservar el historial de verificación.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  # Comprobaciones baratas que fallan en segundos y evitan ocupar el runner con navegadores.
+  verificacion-rapida:
+    name: Verificación rápida
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: [self-hosted, i7infra-dev]
+    timeout-minutes: 10
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Sintaxis del JavaScript de las pruebas
+        run: |
+          set -euo pipefail
+          for archivo in e2e/*.js playwright.config.js; do
+            node --check "$archivo"
+            echo "ok  $archivo"
+          done
+
+      - name: Listar las pruebas (detecta specs rotas y `test.only`)
+        run: npx playwright test --list
+
+  e2e:
+    name: E2E
+    needs: verificacion-rapida
+    # Un pull request se valida rápido con un solo navegador; lo ya integrado —`main`, las ramas de
+    # release y la cola de merge—, con la matriz completa.
+    uses: ./.github/workflows/e2e.yml
+    with:
+      navegadores: ${{ github.event_name == 'pull_request' && 'chromium' || 'chromium,firefox,webkit,mobile-chrome' }}
+      cantidad-shards: ${{ github.event_name == 'pull_request' && 2 || 4 }}
+      referencia: ${{ github.event.pull_request.head.sha || github.sha }}
+
+  # Único check que la regla de protección de rama necesita exigir: resume a todos los demás,
+  # así la regla no hay que actualizarla cada vez que cambia la matriz.
+  ci-ok:
+    name: CI aprobada
+    needs: [verificacion-rapida, e2e]
+    if: always()
+    runs-on: [self-hosted, i7infra-dev]
+    steps:
+      - name: Comprobar que ningún job previo falló
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "verificacion-rapida: ${{ needs.verificacion-rapida.result }}"
+          echo "e2e: ${{ needs.e2e.result }}"
+          for resultado in "${{ needs.verificacion-rapida.result }}" "${{ needs.e2e.result }}"; do
+            case "$resultado" in
+              success|skipped) ;;
+              *) echo "::error::La CI no está en verde."; exit 1 ;;
+            esac
+          done
