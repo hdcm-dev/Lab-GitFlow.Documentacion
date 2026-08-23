@@ -73,7 +73,7 @@ Qué se produce en el circuito, quién lo produce y dónde está descripto.
 
 | Artefacto | Produce | Se verifica con | Documento |
 |---|---|---|---|
-| Rama corta | A-DEV | Nombre según convención, vida menor a dos días | [06](06-Modelo-Adoptado.md) |
+| Rama corta | A-DEV | Nombre según convención; objetivo de vida ≤ 2 días, umbral normativo > 7 días | [06](06-Modelo-Adoptado.md) |
 | Pull request | A-DEV | Plantilla completa y CI en verde | [08](08-Pull-Requests-Y-Pruebas.md) · [plantilla](Anexos/Plantillas.md) |
 | Commit en la línea principal | Merge del PR | Uno por issue, mensaje convencional | [08](08-Pull-Requests-Y-Pruebas.md) |
 | Rama de release | A-OPS | Existe una sola candidata activa | [07](07-Integracion-Y-Versionado.md) |

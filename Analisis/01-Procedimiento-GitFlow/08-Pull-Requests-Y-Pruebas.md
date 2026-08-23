@@ -24,11 +24,19 @@ merge esté bloqueado si el pipeline no está en verde**.
 1. Se abre **en borrador** con el primer commit. **[C]** La verificación automática empieza a correr
    temprano y quien revisa el diseño puede mirar el resultado mientras el trabajo avanza.
 2. La descripción vincula el issue (`Closes #142`), lo que lo cierra automáticamente al mergear.
-3. El pipeline ejecuta build, análisis estático, escaneo de dependencias y las pruebas —unitarias,
-   de integración y de extremo a extremo—.
+3. El pipeline ejecuta lo que está implementado en los workflows del anexo, y nada más: compilación
+   de la solución con las advertencias como errores, descubrimiento de las pruebas, y la regresión
+   de extremo a extremo. **[C]** Análisis estático, escaneo de dependencias y pruebas unitarias o de
+   integración **no** corren hoy: son controles pendientes, no cubiertos. Cada fila de esta lista
+   tiene que poder señalarse job por job en
+   [Anexos/workflows/ci.yml](Anexos/workflows/ci.yml); si no se puede, no se enuncia.
 4. Se marca como listo para revisión.
-5. Revisión: una aprobación para cambios normales; dos para infraestructura, seguridad o migraciones
-   de datos. **[C]**
+5. Revisión: una aprobación para cambios normales; dos cuando el pull request toca alguna de las
+   rutas sensibles declaradas en `CODEOWNERS` —hoy `.github/workflows/**` y
+   `src/**/Persistencia/**`—. El criterio es la ruta tocada, no una apreciación sobre el cambio, y
+   se configura como regla del repositorio, no como acuerdo verbal. **[C]** Con un equipo de tres
+   personas y el autor excluido, «dos aprobaciones» significa unanimidad de los otros dos: es una
+   consecuencia operativa deliberada, no un descuido.
 6. **Squash merge**, y la rama se borra automáticamente.
 
 ### Por qué squash
@@ -74,7 +82,7 @@ importa la cobertura.
 
 | Disparador | Alcance de la verificación | Por qué |
 |---|---|---|
-| `pull_request` a `main` o `release/*` | Comprobaciones rápidas + regresión en un navegador, repartida en shards | Respuesta en minutos; es el control que impide romper lo estable |
+| `pull_request` a `main` o `release/*` | Comprobaciones rápidas + regresión en **un solo navegador** (chromium) | Respuesta en minutos; es el control que impide romper lo estable. El recorte de latencia es la matriz, no el reparto en shards: el workflow reutilizable de la aplicación no ofrece sharding |
 | `push` a `main` | Matriz completa de navegadores | Lo ya integrado se verifica a fondo |
 | `push` a `release/*` | Matriz completa | Un cherry-pick que aplica limpio no garantiza que funcione **[F: TBD-1]** |
 | `merge_group` | Igual que `push` | La cola de merge verifica la combinación real |
@@ -87,10 +95,11 @@ importa la cobertura.
 
 ### Verificación rápida primero
 
-Antes de gastar un runner con navegadores conviene un job barato que falle en segundos: comprobación
-de sintaxis, análisis estático y listado de las pruebas —que detecta specs rotas y marcas de
-ejecución exclusiva olvidadas—. Un pull request que no compila no merece una matriz de cuatro
-navegadores.
+Antes de gastar un runner con navegadores conviene un job barato que falle en segundos. Sobre esta
+aplicación —.NET, con la suite E2E en `tests/MovilidadUrbana.E2ETests`— eso es: restaurar, compilar
+la solución con las advertencias tratadas como errores, y listar las pruebas, que detecta pruebas
+rotas y filtros de ejecución olvidados. Un pull request que no compila no merece una matriz de
+cuatro navegadores.
 
 ### Una sola definición de «cómo se corren las pruebas»
 
@@ -128,12 +137,32 @@ La configuración es lo que convierte al procedimiento en un control efectivo:
 |---|---|---|
 | Prohibir push directo | `main`, `release/*` | Todo entra por pull request |
 | Verificaciones obligatorias | `main`, `release/*` | Sin pipeline en verde no hay merge |
-| Aprobaciones mínimas | `main`, `release/*` | 1 normal, 2 en infraestructura, seguridad y migraciones **[C]** |
-| `CODEOWNERS` | carpetas sensibles | Asigna revisor automáticamente |
+| Aprobaciones mínimas | `main`, `release/*` | 1 aprobación **[C]** |
+| Revisión obligatoria de propietarios | `main`, `release/*` | *Require review from Code Owners*: sin la aprobación del dueño de la ruta no hay merge |
+| Segunda aprobación por ruta sensible | `.github/workflows/**`, `src/**/Persistencia/**` | La categoría «infraestructura, seguridad o migraciones» se define por **ruta**, no por juicio: son exactamente las rutas de `CODEOWNERS`. Se instrumenta con una regla adicional (*ruleset*) que exige 2 aprobaciones sobre ese patrón **[C]** |
 | Borrado automático de rama | todas | Higiene, y evidencia de convergencia |
 
 Conviene exigir **un único check** en la regla de protección —un job final que resuma a los demás— en
-lugar de listar cada job: así la regla no hay que actualizarla cada vez que cambia la matriz.
+lugar de listar cada job: así la regla no hay que actualizarla cada vez que cambia la matriz. El
+check solo puede dar verde si los jobs que resume **efectivamente corrieron**: un job salteado no es
+un job aprobado, y tratarlo como tal es la forma silenciosa en que este control se vaciaría.
+
+### Protección del espacio de nombres de tags
+
+La protección de rama no alcanza. El tag `v*` es el disparador de
+[`release.yml`](Anexos/workflows/release.yml), que construye y publica el artefacto con permiso de
+escritura sobre el repositorio: quien pueda empujar un tag `v*` publica una versión desde cualquier
+commit, sin pull request, sin revisión y sin protección de rama. Como según este documento el tag es
+la respuesta a «qué hay en producción», eso corta la cadena de custodia del artefacto liberado.
+
+| Control | Alcance | Efecto |
+|---|---|---|
+| Regla de protección de tags | patrón `v*` | Solo el rol A-OPS puede crear tags de versión **[C]** |
+| Tag únicamente sobre commit integrado | `v*` | El commit etiquetado tiene que ser alcanzable desde `main` o desde una `release/*`, nunca desde una rama personal |
+| Autorización previa a la versión final | tags sin sufijo (`v1.0.0`) | Registro de A-AUT antes de crear el tag; las candidatas `-rc` no la requieren |
+
+Si el equipo decide no configurar esto, la decisión hay que escribirla como riesgo aceptado y decir
+por qué la verificación previa del workflow se considera suficiente. **[C]**
 
 ## Aplicación por escenario
 
@@ -149,11 +178,11 @@ lugar de listar cada job: así la regla no hay que actualizarla cada vez que cam
 
 Un pull request de corrección sobre `fix/142` contra `main`, en un repositorio con este esquema:
 
-1. Primer commit y apertura en borrador. Arranca la verificación rápida: falla en 40 segundos porque
-   la prueba nueva todavía no compila. Nadie perdió un runner con navegadores.
-2. Se corrige. La verificación rápida pasa y arranca la regresión en chromium repartida en dos
-   shards. Falla una prueba de la encuesta: el reporte HTML y la traza quedan como artefactos de la
-   corrida.
+1. Primer commit y apertura en borrador. Arranca la verificación rápida —que corre también en
+   borrador— y falla en 40 segundos porque la prueba nueva todavía no compila. Nadie perdió un
+   runner con navegadores.
+2. Se corrige. La verificación rápida pasa y arranca la regresión en chromium, un solo navegador.
+   Falla una prueba de la encuesta: el TRX y los resultados quedan como artefactos de la corrida.
 3. Se corrige la causa. Pipeline en verde, revisión aprobada, squash merge. En `main` queda un solo
    commit, `a3f9c21`.
 4. `push` a `main` dispara la matriz completa: cuatro navegadores.

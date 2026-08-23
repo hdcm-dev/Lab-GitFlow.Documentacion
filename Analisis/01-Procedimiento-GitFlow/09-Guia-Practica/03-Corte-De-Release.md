@@ -62,15 +62,47 @@ y, si se aprueba, el mismo que va a producción.
 
 ### 4. Escribir los criterios de admisión (I1 + I2)
 
-Se registra en la descripción de la rama o en el issue de release. La convención de esta guía: en la
-primera semana se admite cualquier defecto reportado por QA; en los últimos días previos al pase,
-solo bloqueantes. **[C]**
+Se registra en la descripción de la rama o en el issue de release, con la
+[plantilla de registro de release](../Anexos/Plantillas.md). Los dos tramos se anclan a fechas, no a
+duraciones relativas: I1 e I2 fijan acá y ahora la **fecha de congelamiento** y la **fecha de pase**.
+Del corte al congelamiento (exclusive) se admite cualquier defecto reportado por QA; del
+congelamiento al pase, solo bloqueantes. **[C]** Ver
+[07](../07-Integracion-Y-Versionado.md).
 
 ### 5. Plan de pruebas (I3)
 
 I3 arma qué se va a verificar sobre la candidata: los criterios de aceptación de lo que entró, más el
 recorrido exploratorio. La regresión automatizada ya corre sola sobre la rama; lo manual es lo que
 I3 planifica.
+
+### 6. Estabilizar y liberar la candidata (E-04)
+
+El escenario no termina en la candidata: E-04 termina cuando **la versión se libera con su tag, o se
+descarta**. Este tramo es el que produce el estado que los escenarios 05 y 07 dan por hecho, y es el
+más delicado del modelo, así que se practica igual que el resto.
+
+1. **Decisión de A-QA (I3).** I3 ejecuta el plan sobre la candidata promocionada a homologación y
+   emite un veredicto escrito sobre `v1.0.0-rc1`: apta, o con defectos que van al escenario 02. Si
+   hay defectos, se vuelve acá con `rc2` antes de seguir.
+2. **Autorización de A-AUT (I2, con el criterio de riesgo).** Queda registrada en el issue de
+   release: quién autoriza, sobre qué candidata y con qué criterio.
+3. **Tag de versión final sobre el mismo commit de la candidata aprobada (I1).**
+
+   ```bash
+   git fetch --tags
+   # El tag final va sobre el MISMO commit que la candidata: si apunta a otro, lo liberado
+   # no es lo que aprobó A-QA.
+   git tag -a v1.0.0 -m "Versión 1.0.0" "$(git rev-list -n1 v1.0.0-rc1)"
+   git push origin v1.0.0
+   test "$(git rev-list -n1 v1.0.0)" = "$(git rev-list -n1 v1.0.0-rc1)" && echo "mismo commit ok"
+   ```
+
+4. **Promoción del artefacto (I1).** Se despliega a producción **el binario de `v1.0.0-rc1`**, no una
+   recompilación: se compara el `sha256sum` del binario desplegado contra el digest registrado para
+   esa candidata. Ver [07](../07-Integracion-Y-Versionado.md).
+
+Al terminar, `v1.0.0` existe, apunta al commit de la candidata aprobada, y hay una versión liberada
+que el escenario 05 puede parchear.
 
 ## Qué observar
 
@@ -93,8 +125,13 @@ I3 planifica.
 
 1. `release/1.0` existe en el remoto y su punta es el SHA elegido, no la punta de `main`.
 2. El tag `v1.0.0-rc1` existe y disparó una corrida que produjo un artefacto.
-3. La protección de rama aplica también sobre `release/*`.
-4. Los criterios de admisión están escritos y son accesibles para los tres integrantes.
+3. La protección de rama aplica también sobre `release/*`: un `git push` directo a `release/1.0` es
+   rechazado.
+4. Los criterios de admisión están escritos, con fecha de congelamiento y de pase, y son accesibles
+   para los tres integrantes.
+5. El tag `v1.0.0` existe y apunta **al mismo commit** que `v1.0.0-rc1`:
+   `test "$(git rev-list -n1 v1.0.0)" = "$(git rev-list -n1 v1.0.0-rc1)"`.
+6. Está registrada la autorización de A-AUT y el digest del artefacto promocionado a producción.
 
 ---
 

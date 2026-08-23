@@ -23,7 +23,9 @@ corrección está en los dos lugares y hay evidencia de que así fue.
 
 ## Precondición
 
-Escenario 03 hecho: existe `release/1.0` con la candidata `v1.0.0-rc1` promocionada. Contexto **C-2**.
+Escenario 03 hecho —es el que produce este estado—: existe `release/1.0` con la candidata
+`v1.0.0-rc1` promocionada. Contexto **C-2**. El orden de ejecución es 00 → 01 → 03 → 02 → 04 → 05 →
+06 → 07; ver el [índice de la guía](README.md).
 
 ## Pasos
 
@@ -51,8 +53,11 @@ contra el merge de rama a rama; no contra el cherry-pick.
 ### 3. Primero la prueba que falla
 
 ```bash
-scripts/e2e.sh npx playwright test --project=chromium e2e/localidades.spec.js
+scripts/publicar.sh          # la suite corre contra el binario publicado
+scripts/pruebas.sh chromium  # tests/MovilidadUrbana.E2ETests, navegador por argumento
 ```
+
+El resultado queda en `resultados/*.trx`; ahí tiene que figurar la prueba nueva como fallida.
 
 La prueba nueva **tiene que fallar**. Si pasa a la primera, no se entendió el defecto: se está
 probando otra cosa. Este paso no es un agregado de esta guía; es parte de la práctica recomendada.
@@ -86,15 +91,25 @@ versión y se registra la decisión en el issue.
 
 ### 7. Cherry-pick a la release
 
+`release/1.0` está protegida igual que `main`: no admite push directo, tampoco para un cherry-pick.
+La vía de escritura es una rama corta cortada **desde la propia release**, y un pull request contra
+ella.
+
 ```bash
 git checkout release/1.0
 git pull --ff-only
+git checkout -b cherry/142-filtro-mayusculas
 git cherry-pick -x <sha-del-fix>
-git push
+git push -u origin cherry/142-filtro-mayusculas
+# Pull request contra release/1.0, pipeline en verde, aprobación, squash merge
 ```
 
-El `-x` deja el SHA original en el mensaje del commit nuevo. De ese rastro depende la auditoría de
-convergencia del escenario 07.
+Si el `git push` directo a `release/1.0` no es rechazado, la protección del escenario 00 está mal
+configurada: es el mismo control que la guía existe para instalar.
+
+El `-x` deja el SHA original en el mensaje del commit nuevo. Sirve para que una persona rastree el
+origen leyendo la historia; **no** es lo que verifica la auditoría de convergencia del escenario 07,
+que compara por contenido con `git cherry`.
 
 ### 8. Nueva candidata y revalidación
 

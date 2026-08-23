@@ -24,16 +24,23 @@ modelo que sale realmente caro.
 ## Precondición
 
 La versión `v1.0.0` está liberada —tag creado y artefacto promocionado— y `main` ya avanzó con
-trabajo posterior al corte. Contexto **C-3**.
+trabajo posterior al corte. Ese estado lo produce el **paso 6 del escenario 03**; si no se hizo, hay
+que hacerlo ahora, porque sin el tag `v1.0.0` el primer comando de este escenario falla con
+«pathspec did not match». Contexto **C-3**.
 
 ## Pasos
 
 ### 1. Confirmar que es una emergencia
 
-La vía de excepción se activa **solo** si el servicio está caído o degradado para los usuarios, hay
-una vulnerabilidad siendo explotada, o el cherry-pick desde `main` no aplica limpio porque el tronco
-divergió demasiado. Un defecto molesto pero tolerable no califica: va por el circuito normal del
-escenario 02.
+La vía de excepción se activa **solo** si hay usuarios afectados ahora —servicio caído o degradado—
+o hay una vulnerabilidad siendo explotada. Las dos condiciones se responden con sí o no mirando un
+hecho registrado: un incidente abierto, una alerta, un aviso de seguridad. Un defecto molesto pero
+tolerable no califica: va por el circuito normal del escenario 02.
+
+Que un cherry-pick desde `main` no aplique limpio **no** es una emergencia: es un problema técnico de
+portabilidad, se resuelve conflicto por conflicto dentro del circuito normal, y se anota que la
+ventana de estabilización se está haciendo larga. Ver
+[06](../06-Modelo-Adoptado.md).
 
 Para la práctica: simular que la aplicación agota el tiempo de espera al listar localidades cuando la
 base tiene muchos registros.
@@ -68,10 +75,25 @@ bloquear el despliegue.
 
 ### 5. Nueva versión de parche y despliegue (I2)
 
+Ramar desde el tag no sirve de nada si después se etiqueta la punta de la release: la punta puede
+tener correcciones mergeadas y **no liberadas**, y el artefacto de `v1.0.1` las llevaría a producción
+igual. Así que la punta se etiqueta solo si está probado que no hay nada de más; si hay, el parche se
+etiqueta sobre el commit del hotfix.
+
 ```bash
 git checkout release/1.0
 git pull --ff-only
+
+# Compuerta: qué hay en la punta que no esté liberado en v1.0.0, sin contar el hotfix recién
+# mergeado. Si esto imprime algo, la punta NO se puede etiquetar.
+git log --oneline v1.0.0..release/1.0 --invert-grep --grep="#199"
+
+# Caso A — la lista está vacía: la punta es el hotfix y nada más.
 git tag -a v1.0.1 -m "Parche: tiempo de espera al listar localidades"
+
+# Caso B — la lista NO está vacía: el tag va sobre el commit del hotfix, no sobre la punta.
+# git tag -a v1.0.1 -m "Parche: tiempo de espera al listar localidades" <sha-del-hotfix-en-release>
+
 git push origin v1.0.1
 ```
 
@@ -111,7 +133,9 @@ culpable, es una prueba de regresión nueva o un control de pipeline nuevo.
 
 ## Verificación
 
-1. Existe el tag `v1.0.1` y apunta a un commit de `release/1.0`.
+1. Existe el tag `v1.0.1`, apunta a un commit de `release/1.0`, y
+   `git log --oneline v1.0.0..v1.0.1` contiene **solo** el hotfix: ningún cambio no autorizado viajó
+   a producción con el parche.
 2. El commit del hotfix figura en `main` con la referencia a su SHA original.
 3. La auditoría de convergencia pasa en verde (escenario 07).
 4. Quedó registrada la aprobación de emergencia y el acta breve de la revisión posterior.

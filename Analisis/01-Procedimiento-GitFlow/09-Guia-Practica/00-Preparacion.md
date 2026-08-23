@@ -22,8 +22,24 @@ teatro: no hay nada que se pueda romper ni ninguna verificación que lo detecte.
 ## Precondición
 
 - `Lab-GitFlow` existe y tiene solo el commit inicial.
-- `Lab-E2E.WebBlazor` está disponible localmente como fuente de la aplicación bajo prueba.
+- Los tres repositorios están clonados **como hermanos** bajo un mismo directorio de trabajo, que
+  todos los bloques de comandos de esta guía dan por posición actual salvo aviso:
+
+  ```
+  <directorio-de-trabajo>/
+    Lab-GitFlow/                    ← el repositorio de práctica
+    Lab-GitFlow.Documentacion/      ← este cuerpo documental
+    Lab-E2E.WebBlazor/              ← la aplicación bajo prueba
+  ```
+
 - Docker instalado.
+- `Lab-GitFlow` es **privado y sin colaboradores externos**. No es un detalle administrativo: el
+  pipeline corre sobre un runner autoalojado persistente y, en el evento `pull_request`, ejecuta el
+  workflow *de la rama del pull request* antes de cualquier revisión. Ver
+  [el anexo de workflows](../Anexos/workflows/README.md).
+- Los equipos de GitHub `@equipo/devops` y `@equipo/datos` existen en la organización dueña del
+  repositorio, con los tres integrantes repartidos. Sin ellos, el `CODEOWNERS` del paso 5 queda sin
+  efecto.
 
 ## Pasos
 
@@ -33,13 +49,20 @@ La aplicación no se escribe para esta práctica: se toma la de `Lab-E2E.WebBlaz
 solución .NET, las pruebas de extremo a extremo con Playwright y los scripts de contenedor.
 
 ```bash
-cd Lab-GitFlow
+cd <directorio-de-trabajo>/Lab-GitFlow
 git checkout -b chore/1-sembrar-aplicacion
 
-# Copiar la aplicación y sus pruebas desde el laboratorio de E2E.
-rsync -a --exclude .git --exclude node_modules --exclude publicacion \
-      --exclude test-results --exclude playwright-report --exclude .nuget \
-      ../Lab-E2E.WebBlazor/ ./
+# Copiar por lista positiva lo que la práctica necesita. Enumerar exclusiones a mano no sirve:
+# la aplicación trae `.dotnet/` y `.navegadores/` (SDK y navegadores descargados, ~1,9 GB) que
+# ninguna lista escrita de memoria contempla.
+rsync -a --relative \
+      ../Lab-E2E.WebBlazor/./{Lab-E2E.WebBlazor.sln,pruebas.runsettings,.gitignore,README.md} \
+      ../Lab-E2E.WebBlazor/./{src,tests,scripts,.github} \
+      ./
+
+# Comprobación de que se sembró lo que debía y nada más:
+du -sh .          # esperado: decenas de MB, no gigabytes
+test -x scripts/pruebas.sh && test -f Lab-E2E.WebBlazor.sln && echo "siembra ok"
 
 git add -A
 git commit -m "chore: sembrar la aplicación de práctica y sus pruebas E2E"
@@ -47,15 +70,29 @@ git push -u origin chore/1-sembrar-aplicacion
 ```
 
 Se integra por pull request, no por push directo: es la primera oportunidad de ver el circuito
-completo antes de que haya protección que lo obligue.
+completo antes de que haya protección que lo obligue. **Abrir el pull request, aprobarlo y mergearlo
+con squash ahora**, antes de seguir: el paso 3 corta su rama desde `main` y necesita que este
+trabajo ya esté ahí.
 
 ### 2. Comprobar que las pruebas corren localmente
 
+La suite de extremo a extremo de esta aplicación es el proyecto **.NET**
+`tests/MovilidadUrbana.E2ETests`, que usa el binding de Playwright para .NET y se configura con
+`pruebas.runsettings`. No hay `package.json`, ni carpeta `e2e/`, ni `playwright.config.js`, ni un
+`scripts/e2e.sh`: los scripts que provee la aplicación son `dotnet.sh`, `pruebas.sh` y
+`publicar.sh`.
+
 ```bash
-scripts/publicar.sh                       # publica el binario autocontenido
-scripts/e2e.sh npm ci
-scripts/e2e.sh npx playwright test --project=chromium
+# Comprobar primero que la interfaz de pruebas es la que esta guía supone:
+ls scripts/                  # esperado: dotnet.sh  pruebas.sh  publicar.sh
+
+scripts/publicar.sh          # publica el binario autocontenido en publicacion/
+scripts/pruebas.sh chromium  # corre tests/MovilidadUrbana.E2ETests contra ese binario
 ```
+
+El navegador se elige por argumento (`scripts/pruebas.sh firefox`) o por variable
+(`NAVEGADOR=webkit scripts/pruebas.sh`); no hay `--project`. Los resultados quedan en
+`resultados/` como TRX.
 
 Si esto no pasa en verde en la máquina de cada integrante, no tiene sentido seguir: los escenarios
 siguientes distinguen «la prueba falla porque el cambio está mal» de «la prueba falla porque el
@@ -69,6 +106,10 @@ auditoría de convergencia. Están en [../Anexos/workflows/](../Anexos/workflows
 **reemplaza** al que vino con la aplicación: aquel solo se dispara sobre `main`.
 
 ```bash
+# La segunda rama nace de `main` con el paso 1 ya mergeado, no de la primera rama.
+git checkout main
+git pull --ff-only
+
 git checkout -b chore/2-workflows-de-gitflow
 cp ../Lab-GitFlow.Documentacion/Analisis/01-Procedimiento-GitFlow/Anexos/workflows/*.yml \
    .github/workflows/
@@ -77,6 +118,10 @@ git commit -m "chore: agregar los workflows de release y auditoría de convergen
 git push -u origin chore/2-workflows-de-gitflow
 ```
 
+Este pull request también se abre, se aprueba y se mergea con squash antes de seguir. Si se saltea,
+la rama del paso 5 va a nacer de esta y su pull request va a mostrar archivos ajenos, que es
+exactamente el «error frecuente» del escenario 01.
+
 ### 4. Configurar la protección de rama
 
 En *Settings → Branches* del repositorio, sobre `main` y sobre el patrón `release/*`:
@@ -84,21 +129,64 @@ En *Settings → Branches* del repositorio, sobre `main` y sobre el patrón `rel
 | Control | Valor |
 |---|---|
 | Require a pull request before merging | sí, con 1 aprobación |
+| Require review from Code Owners | **sí** — sin esto el `CODEOWNERS` del paso 5 solo sugiere revisor, no controla nada |
 | Require status checks to pass | sí, check obligatorio: `CI aprobada` |
 | Require branches to be up to date | sí |
 | Do not allow bypassing | sí, incluidos administradores |
 | Automatically delete head branches | sí (*Settings → General*) |
 
+Y una regla adicional (*ruleset*) que exige **2 aprobaciones** sobre los patrones
+`.github/workflows/**` y `src/**/Persistencia/**`, que es como se instrumenta la regla de
+[08](../08-Pull-Requests-Y-Pruebas.md): la categoría «infraestructura, seguridad o migraciones» se
+decide por ruta tocada, no por juicio.
+
+Sobre el espacio de nombres de tags, en *Settings → Tags*: regla sobre el patrón `v*` que restringe
+la creación a quien cumple A-OPS. Sin ella, cualquiera con permiso de escritura publica una versión
+desde una rama personal, porque el disparador de `release.yml` es el tag, no el merge.
+
 Se exige **un solo check** —el job resumen— y no la lista completa de jobs: así la regla no hay que
 tocarla cada vez que cambia la matriz de navegadores.
 
+### Permisos y vía de excepción sobre la protección **[C]**
+
+Desactivar el bypass sin decir quién puede levantar la protección y cómo, garantiza que en la
+primera emergencia alguien la levante sin dejar rastro. Queda escrito:
+
+| Actor | Permiso sobre `Lab-GitFlow` |
+|---|---|
+| A-DEV, A-REV, A-QA | Write |
+| A-OPS | Admin |
+| A-AUT | Write, más la autorización registrada fuera del repositorio |
+
+La única vía de excepción es que **A-OPS** desactive temporalmente la regla, y solo si el pipeline no
+puede correr por una causa de infraestructura —el runner apagado o sin la etiqueta `i7infra-dev`—
+durante una emergencia en curso. Se registra en el incidente antes de hacerlo: quién, qué regla, por
+qué y hasta cuándo. La regla se vuelve a activar el mismo día, y el pull request afectado se
+reverifica cuando el runner vuelve. Esto entra en la lista de emergencia y en la revisión posterior
+a la implementación.
+
 ### 5. Declarar dueños de los archivos sensibles
 
-```
-# .github/CODEOWNERS
+Los equipos `@equipo/devops` y `@equipo/datos` tienen que existir **antes** en la organización dueña
+del repositorio (*Organization → Teams*), con acceso al repositorio: `CODEOWNERS` que nombra un
+equipo inexistente es silenciosamente inerte.
+
+```bash
+git checkout main
+git pull --ff-only
+git checkout -b chore/3-codeowners
+mkdir -p .github
+cat > .github/CODEOWNERS <<'EOF'
 .github/workflows/   @equipo/devops
 src/**/Persistencia/ @equipo/datos
+EOF
+git add .github/CODEOWNERS
+git commit -m "chore: declarar dueños de los archivos sensibles"
+git push -u origin chore/3-codeowners
 ```
+
+Este pull request también se aprueba y se mergea con squash: recién ahí la verificación del escenario
+—«`git ls-remote --heads origin` muestra solo `main`»— puede cumplirse.
 
 Son los dos lugares donde un error no se arregla con un revert: el pipeline y las migraciones de
 datos.
@@ -121,13 +209,19 @@ datos.
 
 ## Verificación
 
-El escenario está resuelto cuando se cumplen las cuatro condiciones:
+El escenario está resuelto cuando se cumplen las siete condiciones:
 
-1. `git ls-remote --heads origin` muestra solo `main`.
-2. Un push directo a `main` es rechazado por el servidor.
+1. `git ls-remote --heads origin` muestra solo `main` —los tres pull requests se mergearon—.
+2. Un push directo a `main` es rechazado por el servidor, y también uno a una rama `release/*`.
 3. Un pull request de prueba dispara la verificación rápida y la regresión, y el botón de merge queda
    bloqueado hasta que terminan.
 4. La corrida deja el reporte de pruebas como artefacto descargable.
+5. `scripts/publicar.sh` y `scripts/pruebas.sh chromium` pasan en verde en la máquina de cada
+   integrante.
+6. El contrato de los workflows se verificó contra el archivo real:
+   `grep -c 'cantidad-shards' .github/workflows/*.yml` no devuelve ninguna coincidencia.
+7. Un pull request que toca `.github/workflows/` pide dos aprobaciones y la revisión del equipo
+   propietario.
 
 ---
 

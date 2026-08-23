@@ -84,9 +84,11 @@ Se escribe al cortar la rama, no al liberar:
 # Release 1.4
 
 **Corte:** commit a3f9c21 del 2026-08-20
+**Congelamiento:** 2026-08-28
+**Pase previsto:** 2026-08-31
 **Alcance:** #107, #115, #119
-**Criterios de admisión:** primera semana, cualquier defecto reportado por QA;
-desde el 26/08, solo bloqueantes.
+**Criterios de admisión:** del corte (20/08) al congelamiento (28/08, exclusive),
+cualquier defecto reportado por QA; del congelamiento al pase, solo bloqueantes.
 **Responsable de release:** <quien cumple A-OPS>
 **Plan de pruebas:** <enlace>
 

@@ -16,6 +16,19 @@ traces: [GF-03, GF-06, GF-07]
 Términos que la guía usa con un significado preciso. Cuando dos personas discuten un modelo de ramas
 sin haber acordado estas definiciones, la discusión no es sobre ramas.
 
+## Vocabulario codificado
+
+Los códigos que las tablas de la guía usan sin volver a explicarlos. Las listas completas están en
+[01 — Marco de referencia](../01-Marco-De-Referencia.md); acá está lo mínimo para resolver una tabla
+sin salir del recorrido.
+
+| Prefijo | Qué nombra | Valores |
+|---|---|---|
+| **E-nn** | Escenario: situación de trabajo con disparador reconocible y final verificable | E-01 funcionalidad nueva · E-02 defecto antes de liberar · E-03 corte de versión · E-04 estabilización de la candidata · E-05 emergencia en producción · E-06 versión de demostración · E-07 mantenimiento sin efecto funcional · E-08 rechazo de un cambio |
+| **C-n** | Contexto: lo que cambia la respuesta correcta dentro de un mismo escenario | C-1 sin release abierta · C-2 con release abierta · C-3 producción comprometida · C-4 varias versiones soportadas en paralelo |
+| **A-XXX** | Actor: se define por lo que decide, no por el cargo | A-PO product owner · A-DEV desarrollo · A-REV revisión de código · A-QA prueba y verificación · A-OPS devops e ingeniería de releases · A-SEC seguridad · A-AUT autoridad de cambio |
+| **I1, I2, I3** | Los tres integrantes del equipo de la guía práctica, que rotan por los actores | Ver la tabla de rotación de la [guía práctica](../09-Guia-Practica/README.md) |
+
 ## Objetos del control de versiones
 
 | Término | Definición | Dónde se trata |

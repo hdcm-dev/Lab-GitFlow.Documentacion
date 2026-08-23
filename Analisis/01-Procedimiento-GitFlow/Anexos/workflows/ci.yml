@@ -33,27 +33,28 @@ jobs:
   # Comprobaciones baratas que fallan en segundos y evitan ocupar el runner con navegadores.
   verificacion-rapida:
     name: Verificación rápida
-    if: ${{ github.event.pull_request.draft != true }}
+    # Corre también con el pull request en borrador: 08 declara que el pull request se abre en
+    # borrador y que la verificación empieza ahí. Si este job se saltea, `e2e` se saltea por
+    # `needs` y el check obligatorio quedaría en verde sin haber verificado nada.
     runs-on: [self-hosted, i7infra-dev]
     timeout-minutes: 10
-    container:
-      image: mcr.microsoft.com/playwright:v1.62.1-noble
+    # Sin `container:`: el runner `i7infra-dev` es él mismo un contenedor y no tiene acceso al
+    # demonio de Docker. Ya trae el SDK de .NET 10 sobre Ubuntu 24.04.
     steps:
       - uses: actions/checkout@v7
 
-      - name: Instalar dependencias
-        run: npm ci
+      - name: Restaurar las dependencias de la solución
+        run: dotnet restore Lab-E2E.WebBlazor.sln
 
-      - name: Sintaxis del JavaScript de las pruebas
-        run: |
-          set -euo pipefail
-          for archivo in e2e/*.js playwright.config.js; do
-            node --check "$archivo"
-            echo "ok  $archivo"
-          done
+      - name: Compilar la solución tratando las advertencias como errores
+        run: >-
+          dotnet build Lab-E2E.WebBlazor.sln
+          --configuration Release --no-restore -warnaserror
 
-      - name: Listar las pruebas (detecta specs rotas y `test.only`)
-        run: npx playwright test --list
+      - name: Listar las pruebas (detecta pruebas rotas y filtros olvidados)
+        run: >-
+          dotnet test tests/MovilidadUrbana.E2ETests
+          --configuration Release --no-build --list-tests
 
   e2e:
     name: E2E
@@ -62,8 +63,9 @@ jobs:
     # release y la cola de merge—, con la matriz completa.
     uses: ./.github/workflows/e2e.yml
     with:
+      # Entradas declaradas por `workflow_call` en e2e.yml: navegadores, url-base, referencia y
+      # retencion-dias. No hay reparto en shards: el alcance se recorta por navegador.
       navegadores: ${{ github.event_name == 'pull_request' && 'chromium' || 'chromium,firefox,webkit,mobile-chrome' }}
-      cantidad-shards: ${{ github.event_name == 'pull_request' && 2 || 4 }}
       referencia: ${{ github.event.pull_request.head.sha || github.sha }}
 
   # Único check que la regla de protección de rama necesita exigir: resume a todos los demás,
@@ -74,7 +76,7 @@ jobs:
     if: always()
     runs-on: [self-hosted, i7infra-dev]
     steps:
-      - name: Comprobar que ningún job previo falló
+      - name: Comprobar que todos los jobs previos terminaron en éxito
         shell: bash
         run: |
           set -euo pipefail
@@ -82,7 +84,9 @@ jobs:
           echo "e2e: ${{ needs.e2e.result }}"
           for resultado in "${{ needs.verificacion-rapida.result }}" "${{ needs.e2e.result }}"; do
             case "$resultado" in
-              success|skipped) ;;
-              *) echo "::error::La CI no está en verde."; exit 1 ;;
+              success) ;;
+              # `skipped` NO es aprobación: significa que la verificación no corrió sobre este
+              # commit. El check obligatorio solo da verde con evidencia positiva de ejecución.
+              *) echo "::error::La CI no está en verde (resultado: $resultado)."; exit 1 ;;
             esac
           done

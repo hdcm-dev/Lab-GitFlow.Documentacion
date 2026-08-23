@@ -29,19 +29,39 @@ protege además las ramas `release/**`, que es precisamente donde el equipo ten�
 ## Lo que estos archivos dan por sentado
 
 - Existe `.github/workflows/e2e.yml`, el workflow reutilizable que define **cómo** se corren las
-  pruebas y que viene con la aplicación sembrada. Recibe `navegadores`, `cantidad-shards`,
-  `url-base`, `referencia` y `retencion-dias`. **[F: GHA-1]**
-- El proyecto .NET está en `src/MovilidadUrbana.Web` y las pruebas en `e2e/`.
+  pruebas y que viene con la aplicación sembrada. Sus entradas de `workflow_call` son exactamente
+  cuatro: `navegadores`, `url-base`, `referencia` y `retencion-dias`. **[F: GHA-1]** No declara
+  reparto en shards, así que ningún llamador puede pasarle `cantidad-shards`: GitHub Actions
+  rechaza la corrida como workflow inválido.
+- El proyecto .NET está en `src/MovilidadUrbana.Web`, la solución en `Lab-E2E.WebBlazor.sln` y las
+  pruebas de extremo a extremo en el proyecto **.NET** `tests/MovilidadUrbana.E2ETests`, que se
+  ejecutan con `dotnet test` y `pruebas.runsettings`. No hay `package.json`, ni `e2e/`, ni
+  `playwright.config.js`: el binding usado es el de .NET.
 - Existe el runner autoalojado con las etiquetas `self-hosted` e `i7infra-dev`. Sobre un runner
   alojado de GitHub alcanza con cambiar el `runs-on:` por `ubuntu-latest`.
+- El repositorio de práctica es **privado y sin colaboradores externos**, o bien tiene activada la
+  aprobación manual de corridas provenientes de forks. Un runner autoalojado es una máquina
+  persistente: en el evento `pull_request` se ejecuta el `ci.yml` *de la rama del pull request*,
+  todavía sin revisar, con acceso al estado que dejaron las corridas anteriores y a la red interna.
+  Si esa condición no se cumple, el pipeline es ejecución remota de código de terceros. **[C]**
+
+Antes de copiar los archivos conviene comprobar el contrato contra el archivo real, no contra esta
+descripción:
+
+```bash
+grep -n 'cantidad-shards' ../../../../Lab-E2E.WebBlazor/.github/workflows/e2e.yml   # no debe haber salida
+sed -n '/workflow_call:/,/outputs:/p' ../../../../Lab-E2E.WebBlazor/.github/workflows/e2e.yml
+```
 
 ## Decisiones que conviene entender antes de copiar
 
-**Ejecución en contenedor.** Los jobs de prueba corren dentro de
-`mcr.microsoft.com/playwright:v1.62.1-noble` y los de build dentro de
-`mcr.microsoft.com/dotnet/sdk:10.0`. Sobre un runner autoalojado esto no es un lujo: sin contenedor,
-la máquina acumula versiones de navegadores y de SDK que nadie recuerda haber instalado, y la corrida
-deja de ser reproducible. **[F: PW-1]**
+**Ejecución directa sobre el runner, sin `container:`.** El aislamiento en contenedor sería
+preferible —**[F: PW-1]** Playwright publica su imagen precisamente para eso—, pero no es una opción
+sobre el runner exigido por el contrato: `e2e.yml` documenta que `i7infra-dev` es él mismo un
+contenedor, sin acceso al demonio de Docker, y que ya trae el SDK de .NET 10 sobre Ubuntu 24.04. Por
+eso los tres workflows de esta carpeta corren directo sobre el runner, igual que `e2e.yml`, y los
+navegadores los instala el CLI de Playwright que viene dentro del paquete de .NET. La contrapartida
+es real y conviene tenerla anotada: la reproducibilidad depende del estado del runner. **[C]**
 
 **Un solo check obligatorio.** La protección de rama exige `CI aprobada` y nada más. Listar cada job
 obliga a editar la configuración del repositorio cada vez que cambia la matriz, y es la razón por la

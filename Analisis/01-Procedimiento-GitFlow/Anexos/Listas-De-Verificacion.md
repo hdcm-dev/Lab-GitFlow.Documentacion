@@ -47,21 +47,32 @@ de acordarse. No reemplazan el criterio; lo liberan para los casos que sí lo re
 
 - [ ] El cambio **ya está en `main`** —no al revés—.
 - [ ] Cumple los criterios de admisión de esa release.
-- [ ] Se usa `-x` para dejar el rastro del SHA original.
+- [ ] Se usa `-x` para dejar el rastro del SHA original —trazabilidad para quien lea la historia; la
+      auditoría automática compara por contenido, no por ese rastro—.
+- [ ] El cherry-pick entra por **pull request** desde una rama cortada de la propia release: no hay
+      push directo a `release/*` para nadie.
 - [ ] Tras el cherry-pick, la verificación completa corre sobre la rama de release.
 - [ ] Queda registrado en la tabla de cherry-picks del registro de release.
 
 ## Antes de promocionar a producción — A-OPS + A-AUT
 
-- [ ] Es **el mismo artefacto** que aprobó A-QA, no una recompilación.
+- [ ] Es **el mismo artefacto** que aprobó A-QA, no una recompilación: el `sha256sum` del binario a
+      desplegar coincide con el digest registrado para esa candidata.
 - [ ] A-QA emitió el reporte de pruebas sobre esa candidata.
 - [ ] La autorización está registrada, con su criterio de riesgo.
-- [ ] El tag de versión existe y apunta al commit correcto.
-- [ ] Está definido cómo se revierte si sale mal.
+- [ ] El tag de versión existe y apunta **al mismo commit que la candidata aprobada**:
+      `git rev-list -n1 vX.Y.Z` = `git rev-list -n1 vX.Y.Z-rcN`.
+- [ ] La versión anterior sigue disponible como artefacto, con su digest, para poder repromocionarla.
+- [ ] Este pase admite reversión; si no la admite —migración de datos aplicada, esquema no
+      compatible hacia atrás—, está escrito y A-AUT lo sabe al autorizar.
 
 ## Durante una emergencia — A-DEV + A-OPS
 
-- [ ] Se confirmó que califica como emergencia; si no, va por el circuito normal.
+- [ ] Se confirmó que califica como emergencia contra el predicado de dos condiciones de
+      [06](../06-Modelo-Adoptado.md) —usuarios afectados ahora, o vulnerabilidad siendo explotada—,
+      con el hecho registrado a la vista. Un cherry-pick que no aplica limpio **no** califica.
+- [ ] Si hubo que levantar alguna protección de rama porque el pipeline no podía correr: quedó
+      registrado quién, qué regla y hasta cuándo, y la regla se reactivó el mismo día.
 - [ ] La rama nació del **tag** de producción, no de la punta de la release.
 - [ ] La corrección es la mínima que resuelve el incidente.
 - [ ] Hay una prueba que cubre el caso.
@@ -70,7 +81,8 @@ de acordarse. No reemplazan el criterio; lo liberan para los casos que sí lo re
 
 ## Semanal — todo el equipo
 
-- [ ] Ninguna rama corta tiene más de una semana de vida **[C]**.
+- [ ] Ninguna rama corta supera el umbral normativo de 7 días de vida **[C]**. El objetivo de diseño
+      son 2 días; entre 2 y 7 la rama está en regla y no requiere acción.
 - [ ] La auditoría de convergencia pasó en verde.
 - [ ] No hay ramas de release en desuso sin borrar.
 - [ ] No hay pruebas salteadas para desbloquear un merge.

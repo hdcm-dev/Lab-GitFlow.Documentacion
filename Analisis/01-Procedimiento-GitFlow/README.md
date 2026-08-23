@@ -77,17 +77,23 @@ Presentar el modelo adoptado como «GitFlow» habría sido cómodo y falso.
 
 ## Ruta de lectura
 
-**Quien recién entra al equipo:** 03 → 06 → 08, y después practicar los escenarios 01 y 02. Los
-documentos 04 y 05 se pueden dejar para más adelante.
+Toda ruta empieza por **01**: es el único documento que define los códigos `E-nn` (escenarios),
+`C-n` (contextos) y `A-XXX` (actores) que 03, 06, 07 y 08 usan sin volver a explicarlos. Saltearlo
+deja tablas enteras escritas en un código irresoluble.
 
-**Quien va a operar releases:** 07 y los anexos de listas de verificación y workflows, y después los
-escenarios 03, 05 y 07.
+**Quien recién entra al equipo:** 01 → 03 → 06 → 08, y después practicar los escenarios **00, 01 y
+03** —en ese orden: el 02 exige una release abierta que solo el 03 crea—. Los documentos 04 y 05 se
+pueden dejar para más adelante.
+
+**Quien va a operar releases:** 01 → 07 y los anexos de listas de verificación y workflows, y después
+los escenarios 03, 05 y 07.
 
 **Quien tiene que decidir el modelo:** 04 → 05, y la sección de fuerza de la evidencia del anexo de
 fuentes.
 
-**Como capacitación completa:** 03 → 04 → 05 → 06 → 07 → 08 → guía práctica de punta a punta. Los
-escenarios 01 a 05 llevan una jornada si se hacen con las esperas reales de revisión.
+**Como capacitación completa:** 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → guía práctica en su orden de
+ejecución (00 → 01 → 03 → 02 → 04 → 05 → 06 → 07). Los escenarios 00 a 05 llevan una jornada si se
+hacen con las esperas reales de revisión.
 
 ## Convención de marcas
 

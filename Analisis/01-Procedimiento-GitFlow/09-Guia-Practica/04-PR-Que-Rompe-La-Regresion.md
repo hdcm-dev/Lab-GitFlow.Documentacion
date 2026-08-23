@@ -23,26 +23,41 @@ la práctica, y el único que se hace rompiendo algo a propósito.
 
 ## Precondición
 
-Escenario 01 terminado: hay pruebas de extremo a extremo que cubren el listado de localidades y el
-asistente de encuesta.
+Escenario 01 terminado. La aplicación sembrada ya trae las pruebas de extremo a extremo que cubren el
+listado de localidades (`LocalidadesTests`), el asistente de encuesta (`EncuestaTests`) y la
+navegación (`NavegacionTests`); son las que este escenario va a poner a trabajar.
 
 ## Pasos
 
 ### 1. Un cambio plausible que rompe otra cosa (I1)
 
-La clave es que el cambio **parezca razonable**. Un ejemplo que funciona bien sobre esta aplicación:
-endurecer la validación del formulario de localidades —por caso, exigir que el código postal tenga
-exactamente cuatro dígitos y **rechazar** los que empiezan con cero—. Es una regla defendible, tiene
-su propia prueba en verde, y rompe una prueba de otra pantalla que sembraba una localidad con código
-postal `0400`.
+La clave es que el cambio **parezca razonable** y que la prueba que rompe sea de **otra pantalla**.
+El ejemplo se elige a partir del comportamiento real de la aplicación sembrada, no de una regla
+inventada: el listado del ABM de localidades se ordena por antigüedad
+(`RepositorioDeLocalidades.ListarAsync` usa `.OrderBy(l => l.Id)`), y el desplegable de localidades
+de la **encuesta** se alimenta de ese mismo listado.
+
+El cambio: *mostrar primero las altas más recientes en el ABM*, es decir `.OrderByDescending(l =>
+l.Id)`. Es una mejora de usabilidad defendible y, sobre todo, **no rompe ninguna prueba del ABM**:
+`LocalidadesTests` localiza sus filas por texto (`Filter(HasText = "Goya")`), no por posición.
+
+Lo que rompe está en la otra pantalla: `EncuestaTests.ElDesplegableDeLocalidadesSeAlimentaDelAbm`
+afirma que la primera opción real del desplegable es `"Corrientes (Corrientes)"` usando
+`opciones.Nth(1)`. Invertido el orden, la primera pasa a ser `"Resistencia (Chaco)"` y esa prueba
+—y solo esa— falla.
 
 ```bash
 git checkout main
 git pull --ff-only
-git checkout -b fix/151-validar-codigo-postal
-# ... cambio + su prueba propia ...
-git push -u origin fix/151-validar-codigo-postal
+git checkout -b feature/151-listado-mas-recientes-primero
+# src/MovilidadUrbana.Web/Infraestructura/Persistencia/RepositorioDeLocalidades.cs
+#   .OrderBy(l => l.Id)  →  .OrderByDescending(l => l.Id)
+# ... más la prueba propia del ABM, en verde ...
+git push -u origin feature/151-listado-mas-recientes-primero
 ```
+
+Antes de dictar la práctica conviene confirmar el rojo esperado corriendo la suite con el cambio
+aplicado: la única prueba fallida tiene que ser `ElDesplegableDeLocalidadesSeAlimentaDelAbm`.
 
 ### 2. Abrir el pull request y esperar el pipeline
 
@@ -58,9 +73,11 @@ reproducir a mano.
 
 Es la discusión formativa del escenario, y no tiene respuesta única:
 
-- Si la regla nueva es correcta, la prueba que sembraba `0400` estaba codificando un dato inválido:
-  se corrige la prueba y se documenta la regla.
-- Si la regla nueva es demasiado estricta, el cambio está mal: se corrige el cambio.
+- Si el orden nuevo es el correcto, la prueba de la encuesta estaba afirmando por posición algo que
+  nunca fue una regla de negocio: se corrige la prueba —que localice la opción por texto, como hacen
+  las del ABM— y se documenta que el orden del listado no es contractual.
+- Si el desplegable de la encuesta sí depende del orden del ABM, el cambio está mal o está
+  incompleto: se corrige el cambio, o se ordena el desplegable por su cuenta.
 
 Lo que **no** es una opción es mergear con la regresión en rojo, ni marcar la prueba como salteada
 para desbloquear el merge. Una prueba salteada es una regresión que nadie va a mirar.

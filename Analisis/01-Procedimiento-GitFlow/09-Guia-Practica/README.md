@@ -53,8 +53,14 @@ Cada escenario tiene la misma estructura, y conviene respetarla:
 5. **Errores frecuentes** — lo que suele salir mal y qué significa.
 6. **Verificación** — cómo se comprueba que el escenario quedó bien resuelto.
 
-El orden 00 → 07 no es arbitrario: cada escenario deja el repositorio en el estado que el siguiente
-necesita. Saltearse el 03 deja sin release abierta y vuelve imposibles el 02 y el 05.
+**El orden de lectura no es el orden de ejecución.** La numeración agrupa por tema; las
+precondiciones mandan. El único orden ejecutable es este, y es el que hay que seguir:
+
+**00 → 01 → 03 → 02 → 04 → 05 → 06 → 07**
+
+El 03 va antes que el 02 porque el 02 exige `release/1.0` con su candidata, y el único escenario que
+la crea es el 03. El 05 exige además la versión `v1.0.0` liberada, que produce el paso 6 del 03.
+Cada escenario deja el repositorio en el estado que el siguiente de **esta** secuencia necesita.
 
 ## Escenarios
 
@@ -63,7 +69,7 @@ necesita. Saltearse el 03 deja sin release abierta y vuelve imposibles el 02 y e
 | [00](00-Preparacion.md) | Preparación | Repositorio, protección de rama, pipeline, `CODEOWNERS` |
 | [01](01-Funcionalidad-Nueva.md) | Funcionalidad nueva | E-01: rama corta, pull request, revisión, squash merge |
 | [02](02-Defecto-Con-Release-Abierta.md) | Defecto con release abierta | E-02: prueba que falla primero, cherry-pick, nueva candidata |
-| [03](03-Corte-De-Release.md) | Corte de release | E-03 y E-04: corte retroactivo, candidata, criterios de admisión |
+| [03](03-Corte-De-Release.md) | Corte de release y liberación | E-03 y E-04: corte retroactivo, candidata, criterios de admisión, autorización, tag de versión final y promoción |
 | [04](04-PR-Que-Rompe-La-Regresion.md) | Pull request que rompe la regresión | E-08: el control que motivó esta guía |
 | [05](05-Emergencia-En-Produccion.md) | Emergencia en producción | E-05: hotfix desde el tag y retorno obligatorio |
 | [06](06-Version-De-Demostracion.md) | Versión de demostración | E-06: artefacto identificable y desechable |

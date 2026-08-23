@@ -44,7 +44,10 @@ los que sí. Todo `+` es un candidato a hotfix sin retorno y hay que explicarlo 
 
 La versión automatizada del mismo control está en
 [../Anexos/workflows/auditoria-convergencia.yml](../Anexos/workflows/auditoria-convergencia.yml), y
-usa el rastro que deja `cherry-pick -x`.
+corre exactamente este `git cherry`: compara por **contenido** y nunca lee el mensaje del commit. El
+`-x` no interviene en la detección; sirve para que una persona rastree el SHA de origen al leer la
+historia. Son dos justificaciones distintas y conviene no mezclarlas: el día que se mezclan, un
+control que alerta se diagnostica buscando un `-x` que nunca tuvo nada que ver.
 
 ### 2. Higiene de ramas
 
@@ -101,14 +104,16 @@ en los criterios de admisión, un umbral de tamaño de pull request— con respo
 | Síntoma | Causa | Corrección |
 |---|---|---|
 | `git cherry` marca todo con `+` | Se compara contra la rama equivocada, o `main` está desactualizado | `git fetch` y repetir con las referencias remotas |
-| La auditoría automática no detecta un hotfix sin retorno | Se hizo cherry-pick sin `-x` | Es la razón de la convención; corregirla y documentarlo |
+| La auditoría automática no detecta un hotfix sin retorno | La rama no cae en el patrón `origin/release/*` que audita el workflow; o el checkout fue superficial y `git cherry` no tiene historia que comparar; o el cambio se reescribió (rebase, squash con contenido distinto) y ya figura como equivalente | Reproducirlo en orden: `git branch -r --list 'origin/release/*'`, después `fetch-depth: 0`, y por último `git cherry -v main <rama>` a mano. **No** es por falta de `-x`: el control compara contenido, no mensajes |
+| La auditoría queda en rojo por un retorno legítimo | El retorno se resolvió a mano y el contenido difiere, así que el commit queda marcado `+` para siempre | Declararlo en el mensaje del commit de la release con la línea `Convergencia: <sha-en-main> (retorno con conflicto resuelto)`, que es lo único que la auditoría excluye **[C]** |
 | Quedan ramas de release viejas | No se borran al caer en desuso | Borrarlas **[F: TBD-1]** |
 
 ## Verificación
 
 Estado final esperado del repositorio de práctica:
 
-1. `git cherry -v main release/1.0` no arroja ningún `+` sin explicación.
+1. `git cherry -v main release/1.0` no arroja ningún `+` salvo los que lleven la línea
+   `Convergencia:` en su mensaje, que es donde se registra la explicación.
 2. Solo quedan `main` y las ramas de release vivas.
 3. Cada tag se puede rastrear hasta su commit y su corrida de pipeline.
 4. La retrospectiva produjo al menos un cambio concreto con responsable asignado.

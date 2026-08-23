@@ -55,7 +55,14 @@ jobs:
 
           for rama in $ramas; do
             # `+` = el cambio no está en main; `-` = ya está.
-            huerfanos="$(git cherry origin/main "$rama" | grep '^+' || true)"
+            # Un retorno resuelto a mano deja el contenido distinto y el commit marcado `+` para
+            # siempre. La única forma declarada de explicarlo es la línea `Convergencia:` en el
+            # mensaje del commit de la release; esos se excluyen para que el rojo signifique
+            # siempre lo mismo.
+            huerfanos="$(git cherry origin/main "$rama" | grep '^+' \
+              | while read -r marca sha; do
+                  git log -1 --format=%B "$sha" | grep -q '^Convergencia:' || echo "$marca $sha"
+                done || true)"
             cantidad="$(printf '%s' "$huerfanos" | grep -c '^+' || true)"
             echo "| \`$rama\` | $cantidad |" >> "$GITHUB_STEP_SUMMARY"
 

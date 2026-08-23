@@ -39,11 +39,21 @@ ocultar trabajo incompleto.
 
 ## Correspondencia ambiente–contenido–tag
 
-| Ambiente | Contenido | Tag típico | Cómo se actualiza |
-|---|---|---|---|
-| Integración | punta de `main` | ninguno | automática en cada merge |
-| Homologación | candidata activa | `v1.4.0-rc2` | promoción del artefacto |
-| Producción | último liberado | `v1.3.2` | promoción previa autorización |
+Cada ambiente se registra con los campos que pide **[F: ISO-29119]** —identificador, responsable de
+proveerlo, período y fidelidad—, más quién puede desplegar en él. Sin esos campos instanciados, un
+ambiente no existe como pieza del procedimiento: se negocia de cero cada vez.
+
+| Ambiente | Contenido | Tag típico | Cómo se actualiza | Responsable de proveerlo | Quién puede desplegar | Fidelidad |
+|---|---|---|---|---|---|---|
+| Integración | punta de `main` | ninguno | automática en cada merge | A-OPS | solo el pipeline | Datos de prueba sembrados por sesión; sin integraciones externas |
+| Homologación | candidata activa | `v1.4.0-rc2` | promoción del artefacto | A-OPS | A-OPS | Misma configuración que producción salvo datos, anonimizados |
+| Producción | último liberado | `v1.3.2` | promoción previa autorización | A-OPS | A-OPS, con autorización de A-AUT registrada | — |
+| Efímero / demostración | lo que se quiera mostrar | `v1.5.0-demo.3` | se levanta desde el artefacto y se destruye | quien pide la demo, con apoyo de A-OPS | quien lo levantó | Sin datos reales; no soportado |
+
+En la [guía práctica](09-Guia-Practica/README.md) estos cuatro ambientes se representan con
+contenedores locales levantados desde el mismo binario publicado, y así queda declarado en el
+[escenario 00](09-Guia-Practica/00-Preparacion.md): la promoción se ejercita de verdad sobre el
+artefacto, aunque el «ambiente» sea un contenedor en la máquina de un integrante. **[C]**
 
 Ante la pregunta «qué hay en producción», la respuesta correcta es un tag. El nombre de una rama no
 es respuesta, porque la rama se mueve.
@@ -80,7 +90,31 @@ flowchart TD
     E -->|sí| H["Autorización de cambio"]
     H --> I["Promoción del MISMO artefacto<br/>a producción + tag v1.4.0"]
     I --> J["Revisión post implementación"]
+    I --> K{"Falla en produccion?"}
+    K -->|Sí, y hay artefacto anterior sano| L["Reversión: repromocionar vx.y.z-1"]
+    K -->|Sí, pero no se puede revertir| M["Arreglar hacia adelante: E-05"]
+    L --> J
+    M --> J
 ```
+
+### Reversión de un pase a producción **[C]**
+
+«Revertir» en este modelo significa **repromocionar el artefacto anterior**, no revertir commits: los
+commits ya están en `main` y en la release, y ahí se quedan. La operación es la misma promoción, con
+el artefacto de la versión previa y su digest registrado.
+
+| Punto | Definición |
+|---|---|
+| Quién decide | A-AUT, a pedido de A-OPS o de A-QA |
+| Umbral | Impacto en usuarios que no se resuelve con un parche dentro de la ventana del incidente |
+| Qué se registra | Decisión, hora, versión de la que se vuelve y a la que se vuelve, y digest del artefacto repuesto |
+| Qué pasa con el tag | El tag de la versión fallida **no se borra ni se reutiliza**: se anota como retirada en la publicación de GitHub |
+| Qué pasa con el issue | Se reabre el issue del defecto y se abre uno de emergencia; la revisión posterior a la implementación es obligatoria **[F: ITIL-1]** |
+
+**Casos que no admiten reversión:** migraciones de datos ya aplicadas y cambios de esquema no
+compatibles hacia atrás. Ahí la única salida es arreglar hacia adelante por la vía de excepción del
+[modelo adoptado](06-Modelo-Adoptado.md), y por eso las migraciones tienen dueño explícito en
+`CODEOWNERS`.
 
 ### Cuándo se corta la release
 
@@ -110,14 +144,42 @@ criterio por escrito antes de necesitarlo.
 > memoria—, y exige que el cambio ya haya aterrizado en el tronco antes de crear el PR contra la
 > rama de release.
 
-Adaptación de este equipo **[C]**: en la primera semana de la release se admite cualquier defecto
-reportado por QA; en los últimos días previos al pase, solo bloqueantes.
+Adaptación de este equipo **[C]**. Los tramos se anclan a **hitos observables**, no a duraciones
+relativas, y forman una partición del intervalo entre el corte y el pase: cada día cae en un tramo y
+en uno solo.
+
+| Tramo | Desde (inclusive) | Hasta (exclusive) | Qué se admite |
+|---|---|---|---|
+| Estabilización | el **corte** de `release/x.y` | el **congelamiento** | Cualquier defecto reportado por A-QA sobre la candidata |
+| Congelamiento | el **congelamiento** | el **pase** a producción | Solo bloqueantes |
+
+El **congelamiento** es una fecha que A-OPS y A-PO fijan y escriben en el registro de release al
+cortar, junto con la fecha de pase prevista. No es «la primera semana» ni «los últimos días»: es un
+hito con fecha, porque una rama de release dura semanas y con tramos relativos los días del medio
+quedaban sin criterio, que es justo la ventana donde se discute cada cherry-pick.
 
 ## Build hermético y promoción
 
 **Se construye una sola vez.** El artefacto que aprueba QA en homologación es el mismo binario que se
 despliega en producción; lo único que cambia entre ambientes es la configuración, inyectada por
 variable de entorno.
+
+### La promoción, como operación concreta **[C]**
+
+Sin estos cuatro puntos «promocionar» es una palabra y el equipo termina recompilando por ambiente
+sin darse cuenta:
+
+| Qué | Cómo se resuelve en este modelo |
+|---|---|
+| Qué identifica al artefacto | Nombre `movilidad-urbana-<tag>-linux-x64.tar.gz` **y** su digest SHA-256, registrado en el registro de release |
+| Dónde vive entre ambientes | Como artefacto de la corrida que lo construyó y adjunto a la publicación de GitHub de la candidata; los ambientes lo descargan de ahí, nunca lo recompilan |
+| Quién lo mueve | A-OPS; a producción, solo con la autorización de A-AUT registrada |
+| Cómo se verifica la identidad | `sha256sum` del binario desplegado contra el digest registrado para la candidata que aprobó A-QA |
+
+Consecuencia sobre el corte de versión: el tag final `vx.y.z` se pone **sobre el mismo commit** que
+la candidata aprobada, y la publicación de la versión **reutiliza** el artefacto de esa candidata en
+lugar de construir uno nuevo. Si por cualquier motivo se reconstruye, la promoción no ocurrió: hubo
+una recompilación, y la verificación de A-QA dejó de aplicar al binario liberado.
 
 > **[F: SRE-1]** Un build hermético es insensible a las bibliotecas y herramientas instaladas en la
 > máquina que lo ejecuta: dos personas que construyen la misma revisión en máquinas distintas
@@ -188,9 +250,13 @@ acumula cambios propios y termina siendo una tercera línea que nadie audita.
 > preaprobados. La revisión posterior a la implementación forma parte del ciclo, no es opcional.
 
 > **[F: ISO-12207]** La gestión de configuración es responsable de líneas base, control de cambios y
-> trazabilidad. En este modelo se materializa en tags, protección de ramas y el registro de qué
-> artefacto está en qué ambiente. **[F: SWEBOK-1]** Es un área de conocimiento propia del cuerpo de
-> conocimiento de la ingeniería de software, no una tarea administrativa.
+> trazabilidad. **[F: SWEBOK-1]** Es un área de conocimiento propia del cuerpo de conocimiento de la
+> ingeniería de software, no una tarea administrativa.
+
+En este modelo esa responsabilidad se materializa en tags, protección de ramas y el registro de qué
+artefacto está en qué ambiente. **[C]** La elección de esos mecanismos es de este equipo: ninguna de
+las dos fuentes prescribe ramas ni tags, como aclara
+[Anexos/Fuentes.md](Anexos/Fuentes.md).
 
 Un issue se cierra cuando A-QA lo valida en el ambiente que corresponde, no cuando se mergea el pull
 request. Mergeado no es verificado.

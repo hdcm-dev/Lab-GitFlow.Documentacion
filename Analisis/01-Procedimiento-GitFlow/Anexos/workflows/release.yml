@@ -21,7 +21,6 @@ jobs:
     uses: ./.github/workflows/e2e.yml
     with:
       navegadores: chromium,firefox,webkit,mobile-chrome
-      cantidad-shards: 4
       referencia: ${{ github.ref_name }}
       retencion-dias: 30
 
