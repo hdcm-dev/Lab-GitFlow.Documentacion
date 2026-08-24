@@ -117,9 +117,34 @@ si alguna vez hay que soportar dos versiones en paralelo—.
 ## Preguntas guía
 
 1. ¿Cuántas versiones del producto están vivas hoy? ¿Y en un año?
+
+   Contá las que tienen usuarios encima, no las que el equipo dice sostener: la respuesta es una
+   lista de tags desplegados, no una impresión. Una sola habilita el modelo de tronco con release
+   cortada *just in time*; con **tres o más** ya estás en **C-4**, el contexto donde GitFlow sigue
+   siendo razonable. Para el año que viene, la evidencia es el compromiso de soporte asumido, no el
+   optimismo del roadmap.
+
 2. Si mañana hay que corregir la versión liberada hace tres meses, ¿desde dónde se rama?
+
+   Desde el tag que marca esa versión en producción, nunca desde la punta de una rama, porque la
+   rama se mueve y el tag no. Si ese tag sigue siendo lo último liberado, la corrección entra por
+   pull request a `release/x.y` y vuelve a `main` el mismo día. Si además hay una versión más nueva
+   viva, la pregunta 1 ya quedó contestada: son dos, y el modelo cambia.
+
 3. ¿La regresión automatizada actual alcanza para confiar en un merge sin verificación manual?
+
+   El pipeline corre hoy compilación con advertencias como errores, descubrimiento de pruebas y
+   regresión de extremo a extremo; análisis estático, escaneo de dependencias y pruebas unitarias o
+   de integración no. **[C]** La comprobación no admite opinión: señalá job por job en el workflow y
+   preguntá qué defectos recientes de producción habría atrapado esa suite. Lo que quede afuera es
+   trabajo de homologación, y hay que decirlo en voz alta.
+
 4. ¿Qué de lo que hoy resuelve una rama larga podría resolver un feature flag?
+
+   Un flag separa desplegar de liberar, así que reemplaza a la rama larga justo en lo que ésta
+   oculta: trabajo incompleto que todavía no se quiere exponer. Mirá qué guarda cada rama de vida
+   larga; si es código a medio hacer, va integrado y apagado. No resuelve, en cambio, un cambio de
+   esquema ya aplicado ni la coexistencia de dos versiones con usuarios.
 
 ## Criterios de calidad
 

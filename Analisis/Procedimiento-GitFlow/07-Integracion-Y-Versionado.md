@@ -265,9 +265,34 @@ request. Mergeado no es verificado.
 
 1. ¿Qué artefacto está hoy en producción y desde qué commit se construyó? ¿Se puede responder sin
    preguntarle a nadie?
+
+   La respuesta válida es un tag —`v1.3.2`, no «la rama de producción»— y el artefacto con el
+   digest SHA-256 que el registro de release le asocia. El commit sale del tag, que es inmutable.
+   Si hace falta consultar a quien desplegó, lo que falta es trazabilidad, no memoria: hay que
+   reconstruir la historia a mano y la verificación de A-QA ya no se puede atar a ningún binario.
+
 2. Si QA aprueba `v1.4.0-rc2` y después entra una corrección, ¿qué se despliega a producción?
+
+   Nada todavía. A-QA aprobó un binario concreto, identificado por su digest; sumar una corrección
+   produce otro binario, y sobre ese no hay verificación. Lo aprobado dejó de ser lo que se
+   desplegaría. Corresponde cherry-pickear el arreglo a `release/1.4`, construir `v1.4.0-rc3`,
+   promocionarla a homologación y revalidar. El tag final irá sobre el commit de la candidata que
+   efectivamente se apruebe.
+
 3. ¿Qué diferencia hay entre `v1.4.0-rc1` y `v1.4.0` en términos de precedencia y de soporte?
+
+   El sufijo de precedencia ubica a `v1.4.0-rc1` por debajo de `v1.4.0` para cualquier herramienta
+   que compare versiones. En soporte la distancia es mayor: la candidata vive en homologación y es
+   material de trabajo de A-QA, mientras que la versión limpia es la liberada y la única que
+   recibe hotfix. Una candidata superada por `rc2` queda fuera del ciclo: no se promociona.
+
 4. ¿Dónde se valida un hotfix si homologación está ocupada?
+
+   Hay tres caminos previstos, cada uno con su precio. Con infraestructura como código, la opción
+   preferida es un ambiente efímero levantado desde el artefacto del hotfix: minutos de cómputo.
+   Si no los hay, pausar la candidata cuesta horas de retraso. Con observabilidad madura y
+   reversión disponible, sirve el despliegue progresivo en producción. Lo que se cierra de
+   antemano es la cuarta opción: desplegar sin probar. **[C]**
 
 ## Criterios de calidad
 

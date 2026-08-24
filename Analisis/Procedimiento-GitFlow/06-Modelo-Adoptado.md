@@ -256,9 +256,34 @@ reunión de equipo **[C]**.
 ## Preguntas guía
 
 1. ¿Qué regla se está rompiendo cuando alguien dice «lo arreglo directo en la release, es más rápido»?
+
+   La 5: «No se corrigen defectos en la rama de release esperando llevarlos de vuelta al tronco.
+   **[F: TBD-2]**». Conviene mirar qué se ahorra realmente. El arreglo no se escribió más rápido:
+   se salteó el orden que fija la regla 4 —tronco, prueba, después cherry-pick— y lo que queda
+   pendiente es el retorno, que nadie agenda.
+
 2. Si hay dos releases vivas y llega una corrección, ¿a cuál va? ¿Quién lo decide?
+
+   Primero a ninguna. La regla 4 manda reproducir y corregir «en el tronco, con una prueba, y
+   recién después» cherry-pickear **[F: TBD-1, SRE-2, GL-1]**. Recién ahí cada release se evalúa
+   por separado, contra el tramo en que esté —estabilización o congelamiento—. La decisión no es
+   de quien escribió el arreglo: el criterio y la fecha los fijaron A-OPS y A-PO al cortar.
+
 3. ¿Qué evidencia queda de que un hotfix volvió al tronco?
+
+   La que produce `git cherry origin/main <rama>`: el commit queda marcado `-`, porque la
+   comparación es por contenido y el SHA siempre cambia tras un cherry-pick. `auditoria-convergencia.yml`
+   corre esa comparación sin que nadie la pida. Si el retorno se resolvió a
+   mano, el contenido difiere y la única declaración admitida es la línea `Convergencia:` en el
+   mensaje. El `-x` se lee, no se audita.
+
 4. ¿Cuál de las siete reglas es la más difícil de sostener en el equipo propio, y qué la haría fácil?
+
+   No hace falta opinar: el repositorio lo delata. Ramas cortas pasando los siete días, la
+   auditoría de convergencia en rojo dos mañanas seguidas, un `push` que entró sin pull request.
+   Cada síntoma señala una regla. Y lo que la vuelve sostenible es configuración —check
+   obligatorio, *Do not allow bypassing*, alerta automática—, porque una regla que depende de
+   acordarse ya falló.
 
 ## Criterios de calidad
 

@@ -157,10 +157,34 @@ también a `develop`, y ese es a la vez su mayor virtud —nada se pierde— y s
 
 1. ¿Qué garantiza `master` en GitFlow y qué garantiza `develop`? ¿Cuál de las dos se parece a la
    línea principal de un modelo sin `develop`?
+
+   `master` garantiza que su `HEAD` es un estado liberable, y cada merge ahí es una liberación;
+   `develop` garantiza lo último integrado para la versión que viene. Conviene mirar la función y
+   no el nombre: la línea principal de un modelo sin `develop` es donde todos integran a diario,
+   así que se parece a `develop`. El papel de `master` lo cumplen ahí los tags de versión.
+
 2. Si una corrección se hace en la rama de release y esa rama se borra sin mergear a `develop`, ¿qué
    pasa con la próxima versión?
+
+   Razonarlo por alcance: el commit existe en la rama de release y llegó a `master` con el merge
+   de cierre, pero ningún ancestro de `develop` lo contiene. La versión liberada sale corregida y
+   la siguiente nace sin el arreglo, de modo que el defecto reaparece como regresión y sin rastro
+   de que alguna vez se resolvió. El escenario **E-02** depende entero de ese segundo merge.
+
 3. ¿Cuántos merges necesita un hotfix para quedar completo? ¿Qué falla si falta uno?
+
+   Dos: a `master`, con tag nuevo, y a `develop`. Preguntarse qué queda descubierto en cada
+   omisión ordena el análisis. Sin el primero, producción nunca recibe el arreglo. Sin el segundo,
+   la próxima release lo pisa, porque el hotfix nació del tag y `develop` jamás lo vio. Nada
+   avisa: el olvido se descubre cuando el defecto vuelve.
+
 4. ¿El equipo propio está en el contexto para el que el autor lo recomienda hoy?
+
+   La nota de 2020 fija el criterio **[F: NVIE-1]**: software explícitamente versionado o varias
+   versiones en producción. Hay que contar cuántas versiones reciben correcciones hoy y con qué
+   cadencia se libera. Una respuesta fundada nombra esos números; una vaga invoca la costumbre o
+   lo que hace otro equipo. Tres o más versiones soportadas ubican al equipo en **C-4**; una sola
+   deja a `develop` sin trabajo que hacer.
 
 ## Criterios de calidad
 

@@ -28,6 +28,11 @@ guía misma.
 
 ### Agregado
 
+- Las 28 preguntas guía de los siete documentos de estudio pasan a llevar respuesta corta. No
+  cierran el tema: muestran el razonamiento que se espera del lector. Las que interrogan la
+  realidad del propio equipo —cuántas versiones vivas hay, quién cierra los issues, qué regla
+  cuesta sostener— no la inventan: dicen qué mirar, qué distingue una respuesta fundada de una
+  impresión y qué implica cada resultado.
 - `README.md` del repositorio y este `CHANGELOG.md`.
 
 ## [2026-08-24]

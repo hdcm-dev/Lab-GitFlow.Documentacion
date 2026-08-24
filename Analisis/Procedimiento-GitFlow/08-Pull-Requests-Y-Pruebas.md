@@ -192,9 +192,33 @@ Un pull request de corrección sobre `fix/142` contra `main`, en un repositorio 
 ## Preguntas guía
 
 1. ¿Qué pasa hoy si alguien abre un pull request contra una rama de release? ¿Corre algo?
+
+   Conviene comprobarlo en el archivo y no de memoria: abrir el `ci.yml` que trae la aplicación
+   sembrada y leer su bloque `on:`. Ahí figuran `push` a `main`, `pull_request` hacia `main` o
+   `develop`, y `merge_group`: ninguno alcanza a `release/*`, así que ese pull request no dispara
+   corrida alguna y la protección de rama no tiene check que exigir. El
+   [`ci.yml`](Anexos/workflows/ci.yml) de esta guía es el que agrega `release/**`.
+
 2. ¿Cuál es el check obligatorio de la regla de protección, y qué jobs resume?
+
+   `CI aprobada` —el job `ci-ok` de [`ci.yml`](Anexos/workflows/ci.yml)—, y resume exactamente dos:
+   `verificacion-rapida` y `e2e`. Corre con `if: always()` y recorre ambos resultados; solo
+   `success` pasa. Un `skipped` lo hace fallar, que es la parte que sostiene el control: un job
+   salteado no verificó este commit.
+
 3. Si la matriz completa tarda demasiado en un pull request, ¿qué se recorta primero y por qué?
+
+   Primero cae la matriz: en el evento `pull_request`, `ci.yml` le pasa a `e2e.yml` la entrada
+   `navegadores: chromium`, y reserva los cuatro para lo ya integrado. El reparto en shards no está
+   disponible: `e2e.yml` declara cuatro entradas de `workflow_call` y ninguna es `cantidad-shards`;
+   pasarla haría que GitHub rechace la corrida como inválida.
+
 4. ¿Dónde queda la evidencia de una corrida que falló, y cuánto tiempo se conserva?
+
+   En la corrida misma: el TRX que `e2e.yml` sube como artefacto. No hay reporte HTML ni trazas de
+   Playwright —la suite es el proyecto .NET `tests/MovilidadUrbana.E2ETests`—. El plazo depende de
+   quién invoque: [`release.yml`](Anexos/workflows/release.yml) fija `retencion-dias: 30`, mientras
+   que `ci.yml` no pasa esa entrada y hereda el valor por omisión de `e2e.yml`.
 
 ## Criterios de calidad
 
