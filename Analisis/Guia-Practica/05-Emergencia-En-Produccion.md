@@ -40,7 +40,7 @@ tolerable no califica: va por el circuito normal del escenario 02.
 Que un cherry-pick desde `main` no aplique limpio **no** es una emergencia: es un problema técnico de
 portabilidad, se resuelve conflicto por conflicto dentro del circuito normal, y se anota que la
 ventana de estabilización se está haciendo larga. Ver
-[06](../06-Modelo-Adoptado.md).
+[06](../Procedimiento-GitFlow/06-Modelo-Adoptado.md).
 
 Para la práctica: simular que la aplicación agota el tiempo de espera al listar localidades cuando la
 base tiene muchos registros.

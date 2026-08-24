@@ -135,10 +135,33 @@ de manera ruidosa en lugar de generar un merge silencioso que nadie pidió. El c
 ## Preguntas guía
 
 1. ¿Por qué el SHA cambia al hacer cherry-pick, y qué consecuencia tiene para comparar ramas?
+
+   El SHA es el hash del commit entero: árbol, padre, autor y fecha. Cambiado el padre, cambia el
+   identificador aunque el diff sea idéntico. Comparar ramas por SHA reporta entonces como faltantes
+   correcciones que ya están aplicadas; por eso la auditoría de convergencia usa `git cherry`, que
+   compara por contenido del cambio.
+
 2. Si una rama de release recibe un cherry-pick, ¿sigue siendo cierto que la rama es «estable»? ¿Qué
    es lo verdaderamente inmutable?
+
+   Cada cherry-pick mueve la punta de `release/1.4`, así que «estable» nombra un criterio de
+   admisión, no una propiedad del puntero. Lo inmutable es el tag. De ahí que la emergencia (E-05)
+   rame desde el tag y no desde la punta de la release: ahí puede haber correcciones todavía no
+   liberadas.
+
 3. ¿En qué caso conviene `--no-ff` y en cuál `squash`? ¿Qué gana y qué pierde cada uno?
+
+   `--no-ff` conserva los commits originales y deja ver qué conjunto implementó una funcionalidad,
+   lo que vuelve trivial revertirla completa **[F: NVIE-1]**; el costo es una línea principal con
+   commits intermedios. `squash` resigna esa historia y gana un SHA por issue, que es lo que hace el
+   cherry-pick a una release de un solo paso **[C]**.
+
 4. ¿Qué información se pierde si se hace cherry-pick sin `-x`?
+
+   Se pierde la línea `(cherry picked from commit a3f9c21)`, o sea el puente entre el commit de la
+   release y su original en la línea principal, con el pull request y el issue que cuelgan de él. La
+   detección de divergencias no se resiente, porque compara contenido. Lo que se degrada es la
+   lectura humana de la historia.
 
 ## Criterios de calidad
 

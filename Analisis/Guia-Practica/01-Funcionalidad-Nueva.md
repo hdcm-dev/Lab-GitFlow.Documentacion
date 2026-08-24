@@ -59,7 +59,7 @@ Refs #107"
 git push -u origin feature/107-filtro-por-provincia
 ```
 
-Se abre el pull request **en borrador**, con la [plantilla](../Anexos/Plantillas.md) completa. El
+Se abre el pull request **en borrador**, con la [plantilla](../Procedimiento-GitFlow/Anexos/Plantillas.md) completa. El
 pipeline arranca ahí, no al final.
 
 ### 4. Las pruebas, con el cambio
@@ -89,7 +89,7 @@ lo reabre si la verificación no pasa. Mergeado no es verificado.
 - **El commit único en `main`.** `git log --oneline -3` después del merge: un commit por issue.
   Anotar ese SHA, pero por el motivo contrario al que suena: **no** va a viajar a la release. Es una
   funcionalidad, y una funcionalidad no se cherry-pickea a una release abierta salvo que estuviera
-  en su alcance —[06](../06-Modelo-Adoptado.md)—. Es el commit que el escenario 02 va a mostrar en
+  en su alcance —[06](../Procedimiento-GitFlow/06-Modelo-Adoptado.md)—. Es el commit que el escenario 02 va a mostrar en
   `git log --oneline main ^release/1.0` como ejemplo concreto de lo que **no** se arrastró. El que
   viaja es el commit del fix #142, y lo produce el propio escenario 02.
 - **Cuándo empieza a correr el pipeline.** Con el pull request en borrador, no al marcarlo listo.

@@ -118,9 +118,33 @@ Ver [Anexos/Fuentes.md](Anexos/Fuentes.md).
 Antes de seguir, conviene poder responder estas cuatro sobre el propio equipo:
 
 1. ¿Cuál de los cuatro contextos describe la situación de hoy? ¿Cuántas versiones se sostienen vivas?
+
+   Son dos preguntas distintas y se contestan con datos, no con impresiones: contá las versiones
+   que hoy **reciben parches** —no las que el equipo dice sostener— y fijate si existe una
+   `release/x.y` viva. Tres o más soportadas es **C-4**; con dos o menos estás en **C-1** o
+   **C-2**, y **C-3** se superpone a cualquiera de ellos cuando hay usuarios afectados ahora.
+
 2. ¿Qué persona cubre cada actor, y qué pares de funciones quedan en la misma persona?
+
+   Escribí los siete IDs y al lado el nombre propio; las casillas que quedan vacías informan tanto
+   como las llenas. Que una persona cubra dos funciones es normal en un equipo chico. Los dos
+   pares que sí importan son **A-DEV** con **A-QA** y **A-OPS** con **A-AUT** sobre el mismo
+   cambio: ahí se pierde la segregación de funciones que la guía sostiene **[C]**.
+
 3. ¿Quién cierra hoy los issues, y en qué momento?
+
+   El dato está en el historial del gestor de issues, no en el procedimiento escrito. Compará la
+   marca de cierre con la del merge: si coinciden, y las hace la misma persona, el equipo está
+   declarando verificado lo que apenas está integrado. La respuesta buena nombra persona y
+   momento; la vaga dice «lo cierra quien lo tomó».
+
 4. ¿Qué escenario de la tabla ocurrió la última vez que algo salió mal, y qué faltó?
+
+   Un episodio se clasifica con evidencia —tags, ramas, pull requests, fechas—, no de memoria;
+   recién con eso a la vista se le pone el ID: **E-02**, **E-05**, **E-08**. Lo que faltó suele
+   ser un paso del propio escenario: la corrección que nunca volvió a la línea principal, el
+   motivo del rechazo que nadie registró. Si el episodio no se puede reconstruir, ese es el
+   hallazgo.
 
 ---
 
