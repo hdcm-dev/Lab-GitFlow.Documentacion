@@ -36,7 +36,7 @@ teatro: no hay nada que se pueda romper ni ninguna verificación que lo detecte.
 - `Lab-GitFlow` es **privado y sin colaboradores externos**. No es un detalle administrativo: el
   pipeline corre sobre un runner autoalojado persistente y, en el evento `pull_request`, ejecuta el
   workflow *de la rama del pull request* antes de cualquier revisión. Ver
-  [el anexo de workflows](../Procedimiento-GitFlow/Anexos/workflows/README.md).
+  [el anexo de workflows](../Modelo-Ramas/Anexos/workflows/README.md).
 - Los equipos de GitHub `@equipo/devops` y `@equipo/datos` existen en la organización dueña del
   repositorio, con los tres integrantes repartidos. Sin ellos, el `CODEOWNERS` del paso 5 queda sin
   efecto.
@@ -126,7 +126,7 @@ entorno está mal», y esa distinción requiere una línea base verde.
 
 Los del laboratorio de E2E cubren el pull request y la línea principal. Faltan los que el
 procedimiento de release necesita: verificación de las ramas `release/*`, corte de versión y
-auditoría de convergencia. Están en [../Anexos/workflows/](../Procedimiento-GitFlow/Anexos/workflows/README.md). El `ci.yml` de esa carpeta
+auditoría de convergencia. Están en [../Anexos/workflows/](../Modelo-Ramas/Anexos/workflows/README.md). El `ci.yml` de esa carpeta
 **reemplaza** al que vino con la aplicación: aquel se dispara sobre `main` y sobre `develop` —una rama que este modelo no usa— y ninguno de sus disparadores alcanza a `release/*`.
 
 ```bash
@@ -135,7 +135,7 @@ git checkout main
 git pull --ff-only
 
 git checkout -b chore/2-workflows-de-gitflow
-cp ../Lab-GitFlow.Documentacion/Analisis/Procedimiento-GitFlow/Anexos/workflows/*.yml \
+cp ../Lab-GitFlow.Documentacion/Analisis/Modelo-Ramas/Anexos/workflows/*.yml \
    .github/workflows/
 git add .github/workflows
 git commit -m "chore: agregar los workflows de release y auditoría de convergencia"
@@ -161,7 +161,7 @@ En *Settings → Branches* del repositorio, sobre `main` y sobre el patrón `rel
 
 Y una regla adicional (*ruleset*) que exige **2 aprobaciones** sobre los patrones
 `.github/workflows/**` y `src/**/Persistencia/**`, que es como se instrumenta la regla de
-[08](../Procedimiento-GitFlow/08-Pull-Requests-Y-Pruebas.md): la categoría «infraestructura, seguridad o migraciones» se
+[08](../Modelo-Ramas/08-Pull-Requests-Y-Pruebas.md): la categoría «infraestructura, seguridad o migraciones» se
 decide por ruta tocada, no por juicio.
 
 Sobre el espacio de nombres de tags, en *Settings → Tags*: regla sobre el patrón `v*` que restringe

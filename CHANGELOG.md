@@ -21,10 +21,13 @@ guía misma.
 
 ### Cambiado
 
-- La guía se reorganiza en dos carpetas hermanas: `Analisis/Procedimiento-GitFlow/` con los
+- La guía se reorganiza en dos carpetas hermanas: `Analisis/Modelo-Ramas/` con los
   documentos de estudio y los anexos, y `Analisis/Guia-Practica/` con los ocho escenarios. Se van
   los prefijos numéricos de las carpetas, que ordenaban un solo nivel y no decían nada. Los 27
   enlaces relativos que la mudanza rompió quedaron reparados y verificados.
+- La carpeta de estudio se llama `Modelo-Ramas` y no `Procedimiento-GitFlow`: lo que ahí se
+  documenta es la elección entre modelos de ramas y el que este equipo adopta, que no es GitFlow.
+  Los 19 lugares que nombraban la ruta anterior quedaron actualizados.
 
 ### Agregado
 
