@@ -27,7 +27,7 @@ repositorio.
 
 Para no atar los roles a las personas, la guía los nombra **I1**, **I2** e **I3**, y los rota por
 escenario. La correspondencia con los actores de
-[01 — Marco de referencia](../Procedimiento-GitFlow/01-Marco-De-Referencia.md) es esta:
+[01 — Marco de referencia](../Modelo-Ramas/01-Marco-De-Referencia.md) es esta:
 
 | Escenario | I1 | I2 | I3 |
 |---|---|---|---|

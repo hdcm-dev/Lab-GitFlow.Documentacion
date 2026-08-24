@@ -11,12 +11,12 @@ nació.
 
 | Carpeta | Qué hay |
 | --- | --- |
-| [Analisis/Procedimiento-GitFlow/](Analisis/Procedimiento-GitFlow/) | Los nueve documentos de estudio, los cinco anexos y los tres workflows de GitHub Actions |
+| [Analisis/Modelo-Ramas/](Analisis/Modelo-Ramas/) | Los nueve documentos de estudio, los cinco anexos y los tres workflows de GitHub Actions |
 | [Analisis/Guia-Practica/](Analisis/Guia-Practica/) | Los ocho escenarios ejecutables sobre `Lab-GitFlow` |
 | `PROMPTs/` | Los prompts de generación y sus insumos. No versionados en este repositorio |
 
 El punto de entrada es
-[Analisis/Procedimiento-GitFlow/README.md](Analisis/Procedimiento-GitFlow/README.md), que
+[Analisis/Modelo-Ramas/README.md](Analisis/Modelo-Ramas/README.md), que
 indica por dónde empezar según el rol de quien lee: desarrollo, QA, devops, product owner o
 autoridad de cambio.
 
@@ -41,7 +41,7 @@ discutir una convención del equipo sin discutir de paso un estándar de la indu
 
 | Marca | Significado |
 | --- | --- |
-| **[F]** | Respaldado por una fuente externa, listada en [Anexos/Fuentes.md](Analisis/Procedimiento-GitFlow/Anexos/Fuentes.md) |
+| **[F]** | Respaldado por una fuente externa, listada en [Anexos/Fuentes.md](Analisis/Modelo-Ramas/Anexos/Fuentes.md) |
 | **[C]** | Convención de este equipo: discutible y cambiable |
 | **[E]** | Comprobado ejecutando o leyendo algo en el propio workspace, con fecha |
 
