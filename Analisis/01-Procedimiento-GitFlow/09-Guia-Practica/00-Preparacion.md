@@ -91,9 +91,28 @@ La suite de extremo a extremo de esta aplicación es el proyecto **.NET**
 # Comprobar primero que la interfaz de pruebas es la que esta guía supone:
 ls scripts/                  # esperado: dotnet.sh  pruebas.sh  publicar.sh
 
-scripts/publicar.sh          # publica el binario autocontenido en publicacion/
-scripts/pruebas.sh chromium  # corre tests/MovilidadUrbana.E2ETests contra ese binario
+scripts/pruebas.sh chromium  # publica la aplicación y corre tests/MovilidadUrbana.E2ETests
 ```
+
+**No hay que anteponer `scripts/publicar.sh`.** El fixture `ServidorDeLaAplicacion` publica por su
+cuenta antes de la primera prueba, sin identificador de plataforma y dependiente del framework. Si
+`publicacion/` ya trae el binario **autocontenido** que deja `publicar.sh`, esa segunda publicación
+se superpone: reescribe `runtimeconfig.json` dejando las bibliotecas del runtime autocontenido en la
+carpeta, y el anfitrión de .NET resuelve la propia carpeta de la aplicación como ubicación del
+runtime, no encuentra ningún framework ahí y el proceso muere antes de escuchar. El síntoma son las
+22 pruebas fallando en `OneTimeSetUp` con *«La aplicación terminó sola con código 150 antes de
+escuchar»*. **[E: corrida local del 2026-08-24 sobre el repositorio sembrado]**
+
+Para ejercitar el artefacto autocontenido —el mismo que se despliega— hay que desactivar el paso del
+fixture, y entonces sí las dos órdenes conviven:
+
+```bash
+scripts/publicar.sh
+PUBLICAR_ANTES_DE_PROBAR=false scripts/pruebas.sh chromium
+```
+
+Las tres combinaciones se probaron sobre el repositorio de práctica sembrado: sola, 22 en verde; con
+la variable, 22 en verde; publicando antes sin la variable, 22 en rojo. **[E]**
 
 El navegador se elige por argumento (`scripts/pruebas.sh firefox`) o por variable
 (`NAVEGADOR=webkit scripts/pruebas.sh`); no hay `--project`. Los resultados quedan en
@@ -221,7 +240,7 @@ El escenario está resuelto cuando se cumplen las siete condiciones:
 3. Un pull request de prueba dispara la verificación rápida y la regresión, y el botón de merge queda
    bloqueado hasta que terminan.
 4. La corrida deja el reporte de pruebas como artefacto descargable.
-5. `scripts/publicar.sh` y `scripts/pruebas.sh chromium` pasan en verde en la máquina de cada
+5. `scripts/pruebas.sh chromium` pasa en verde en la máquina de cada
    integrante.
 6. El contrato de los workflows se verificó contra el archivo real:
    `grep -c 'cantidad-shards' .github/workflows/*.yml` no devuelve ninguna coincidencia.
