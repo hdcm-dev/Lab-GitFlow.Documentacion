@@ -205,4 +205,4 @@ el archivo YAML siga ahí.
 
 ---
 
-Sigue: [09 — Guía práctica](09-Guia-Practica/README.md).
+Sigue: [09 — Guía práctica](../Guia-Practica/README.md).

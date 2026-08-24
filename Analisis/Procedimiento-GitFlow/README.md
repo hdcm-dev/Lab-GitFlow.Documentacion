@@ -62,7 +62,7 @@ Presentar el modelo adoptado como «GitFlow» habría sido cómodo y falso.
 | 06 | [Modelo adoptado](06-Modelo-Adoptado.md) | Las siete reglas, de dónde nace cada rama, guardarraíles y antipatrones |
 | 07 | [Integración y versionado](07-Integracion-Y-Versionado.md) | Ambientes, artefactos, promoción, versionado semántico, releases y versiones de demostración |
 | 08 | [Pull requests y pruebas](08-Pull-Requests-Y-Pruebas.md) | Ciclo del pull request, tamaño, protección de rama y qué verifica el pipeline en cada disparador |
-| 09 | [Guía práctica](09-Guia-Practica/README.md) | Ocho escenarios ejecutables para un equipo de tres personas |
+| 09 | [Guía práctica](../Guia-Practica/README.md) | Ocho escenarios ejecutables para un equipo de tres personas |
 
 ### Anexos
 

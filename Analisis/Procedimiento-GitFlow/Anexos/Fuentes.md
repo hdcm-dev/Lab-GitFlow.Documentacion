@@ -84,4 +84,4 @@ que se puedan discutir por separado de su fundamento.
 | Documento | Rol en esta guía |
 |---|---|
 | `Flujo-De-Trabajo-Ramas.md` | Propuesta de flujo del equipo. Es el origen del modelo de [06](../06-Modelo-Adoptado.md), de los criterios de [07](../07-Integracion-Y-Versionado.md) y de buena parte del anexo de preguntas |
-| `Lab-E2E.WebBlazor` | Aplicación bajo prueba y origen del pipeline de E2E que usa la [guía práctica](../09-Guia-Practica/README.md) |
+| `Lab-E2E.WebBlazor` | Aplicación bajo prueba y origen del pipeline de E2E que usa la [guía práctica](../../Guia-Practica/README.md) |

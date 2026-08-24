@@ -50,9 +50,9 @@ ambiente no existe como pieza del procedimiento: se negocia de cero cada vez.
 | Producción | último liberado | `v1.3.2` | promoción previa autorización | A-OPS | A-OPS, con autorización de A-AUT registrada | — |
 | Efímero / demostración | lo que se quiera mostrar | `v1.5.0-demo.3` | se levanta desde el artefacto y se destruye | quien pide la demo, con apoyo de A-OPS | quien lo levantó | Sin datos reales; no soportado |
 
-En la [guía práctica](09-Guia-Practica/README.md) estos cuatro ambientes se representan con
+En la [guía práctica](../Guia-Practica/README.md) estos cuatro ambientes se representan con
 contenedores locales levantados desde el mismo binario publicado, y así queda declarado en el
-[escenario 00](09-Guia-Practica/00-Preparacion.md): la promoción se ejercita de verdad sobre el
+[escenario 00](../Guia-Practica/00-Preparacion.md): la promoción se ejercita de verdad sobre el
 artefacto, aunque el «ambiente» sea un contenedor en la máquina de un integrante. **[C]**
 
 Ante la pregunta «qué hay en producción», la respuesta correcta es un tag. El nombre de una rama no

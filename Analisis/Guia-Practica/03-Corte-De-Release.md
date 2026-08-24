@@ -63,11 +63,11 @@ y, si se aprueba, el mismo que va a producción.
 ### 4. Escribir los criterios de admisión (I1 + I2)
 
 Se registra en la descripción de la rama o en el issue de release, con la
-[plantilla de registro de release](../Anexos/Plantillas.md). Los dos tramos se anclan a fechas, no a
+[plantilla de registro de release](../Procedimiento-GitFlow/Anexos/Plantillas.md). Los dos tramos se anclan a fechas, no a
 duraciones relativas: I1 e I2 fijan acá y ahora la **fecha de congelamiento** y la **fecha de pase**.
 Del corte al congelamiento (exclusive) se admite cualquier defecto reportado por QA; del
 congelamiento al pase, solo bloqueantes. **[C]** Ver
-[07](../07-Integracion-Y-Versionado.md).
+[07](../Procedimiento-GitFlow/07-Integracion-Y-Versionado.md).
 
 ### 5. Plan de pruebas (I3)
 
@@ -99,7 +99,7 @@ más delicado del modelo, así que se practica igual que el resto.
 
 4. **Promoción del artefacto (I1).** Se despliega a producción **el binario de `v1.0.0-rc1`**, no una
    recompilación: se compara el `sha256sum` del binario desplegado contra el digest registrado para
-   esa candidata. Ver [07](../07-Integracion-Y-Versionado.md).
+   esa candidata. Ver [07](../Procedimiento-GitFlow/07-Integracion-Y-Versionado.md).
 
 Al terminar, `v1.0.0` existe, apunta al commit de la candidata aprobada, y hay una versión liberada
 que el escenario 05 puede parchear.

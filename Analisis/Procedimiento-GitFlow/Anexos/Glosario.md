@@ -27,7 +27,7 @@ sin salir del recorrido.
 | **E-nn** | Escenario: situación de trabajo con disparador reconocible y final verificable | E-01 funcionalidad nueva · E-02 defecto antes de liberar · E-03 corte de versión · E-04 estabilización de la candidata · E-05 emergencia en producción · E-06 versión de demostración · E-07 mantenimiento sin efecto funcional · E-08 rechazo de un cambio |
 | **C-n** | Contexto: lo que cambia la respuesta correcta dentro de un mismo escenario | C-1 sin release abierta · C-2 con release abierta · C-3 producción comprometida · C-4 varias versiones soportadas en paralelo |
 | **A-XXX** | Actor: se define por lo que decide, no por el cargo | A-PO product owner · A-DEV desarrollo · A-REV revisión de código · A-QA prueba y verificación · A-OPS devops e ingeniería de releases · A-SEC seguridad · A-AUT autoridad de cambio |
-| **I1, I2, I3** | Los tres integrantes del equipo de la guía práctica, que rotan por los actores | Ver la tabla de rotación de la [guía práctica](../09-Guia-Practica/README.md) |
+| **I1, I2, I3** | Los tres integrantes del equipo de la guía práctica, que rotan por los actores | Ver la tabla de rotación de la [guía práctica](../../Guia-Practica/README.md) |
 
 ## Objetos del control de versiones
 

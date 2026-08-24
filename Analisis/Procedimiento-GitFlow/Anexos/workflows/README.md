@@ -15,7 +15,7 @@ traces: [GF-08, GF-09-00]
 
 Los tres archivos de esta carpeta completan el pipeline para operar el modelo de tronco con ramas de
 release. Se copian a `.github/workflows/` del repositorio de práctica en el
-[escenario 00](../../09-Guia-Practica/00-Preparacion.md).
+[escenario 00](../../../Guia-Practica/00-Preparacion.md).
 
 | Archivo | Disparadores | Qué hace |
 |---|---|---|
@@ -87,5 +87,5 @@ sin divergencias— dio contador `0` y salida `0`.
 
 Lo que sigue **sin verificar** es el comportamiento de los tres workflows dentro de GitHub Actions:
 requiere el runner `i7infra-dev` y un repositorio con la aplicación ya sembrada. Antes de darlos por buenos conviene correr el
-[escenario 00](../../09-Guia-Practica/00-Preparacion.md) completo y comprobar los cuatro puntos de su
+[escenario 00](../../../Guia-Practica/00-Preparacion.md) completo y comprobar los cuatro puntos de su
 sección de verificación.
