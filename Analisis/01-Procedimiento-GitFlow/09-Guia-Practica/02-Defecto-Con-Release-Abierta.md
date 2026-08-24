@@ -53,7 +53,8 @@ contra el merge de rama a rama; no contra el cherry-pick.
 ### 3. Primero la prueba que falla
 
 ```bash
-scripts/publicar.sh          # la suite corre contra el binario publicado
+# El fixture publica la aplicación antes de la primera prueba; anteponer `publicar.sh`
+# rompe la corrida (ver escenario 00, paso 2).
 scripts/pruebas.sh chromium  # tests/MovilidadUrbana.E2ETests, navegador por argumento
 ```
 
