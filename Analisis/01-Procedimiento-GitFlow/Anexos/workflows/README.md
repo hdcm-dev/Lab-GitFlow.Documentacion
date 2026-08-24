@@ -76,8 +76,16 @@ comparar.
 
 ## Estado de verificación
 
-**No verificado.** Los tres archivos se validaron únicamente como YAML; su comportamiento real en
-GitHub Actions no se ejecutó, porque requiere el runner `i7infra-dev` y un repositorio con la
-aplicación ya sembrada. Antes de darlos por buenos conviene correr el
+**Parcialmente verificado.** Los tres archivos parsean como YAML. La lógica de
+`auditoria-convergencia.yml` —la más frágil de las tres, porque es un script de shell con tuberías
+bajo `set -euo pipefail`— se ejecutó fuera de GitHub Actions, sobre un repositorio de prueba armado
+al efecto con una rama de release que tenía dos correcciones sin retorno a `main`, una de ellas con
+el encabezado `Convergencia:` en su mensaje. **[E: corrida local del 2026-08-23]** El resultado fue
+el declarado: la marcada con `Convergencia:` se excluyó, la otra se reportó como `::error::`, el
+contador del resumen dio `1` y el job terminó en `exit 1`. El camino en verde —una rama de release
+sin divergencias— dio contador `0` y salida `0`.
+
+Lo que sigue **sin verificar** es el comportamiento de los tres workflows dentro de GitHub Actions:
+requiere el runner `i7infra-dev` y un repositorio con la aplicación ya sembrada. Antes de darlos por buenos conviene correr el
 [escenario 00](../../09-Guia-Practica/00-Preparacion.md) completo y comprobar los cuatro puntos de su
 sección de verificación.

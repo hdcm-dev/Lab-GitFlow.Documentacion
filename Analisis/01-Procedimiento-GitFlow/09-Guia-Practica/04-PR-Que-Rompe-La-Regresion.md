@@ -65,9 +65,17 @@ Sin tocar nada más. Lo que sigue es lo que hay que mirar.
 
 ### 3. Leer el reporte antes que el código (I3)
 
-En la corrida fallida hay tres artefactos: el reporte HTML, la traza de Playwright y las capturas del
-momento de la falla. La traza permite ver el estado del navegador en el paso exacto que falló, sin
-reproducir a mano.
+La evidencia de la corrida es el **TRX** de cada configuración, que el workflow sube como artefacto
+`resultados-<configuracion>`, más la tabla de contadores que `e2e.yml` escribe en el resumen de la
+corrida. El TRX trae, por cada caso fallido, el mensaje de la aserción y su pila: para esta rotura
+dice qué texto esperaba y cuál encontró, que es exactamente lo que hace falta para decidir sin
+abrir el código.
+
+Conviene saber qué **no** hay, porque el reflejo de buscarlo cuesta tiempo: con el binding de .NET
+no existen el reporte HTML ni la traza navegable que genera el runner de JavaScript. El proyecto
+sembrado no instrumenta `Context.Tracing`, así que no se producen trazas ni capturas. Si el equipo
+las quiere, hay que agregarlas explícitamente en la clase base de las pruebas y subirlas como un
+artefacto más; es una mejora razonable, pero es trabajo, no una casilla de configuración.
 
 ### 4. Decidir qué está mal: el cambio o la prueba (los tres)
 
@@ -106,7 +114,7 @@ Se ajusta lo que corresponda, el pipeline vuelve a correr y recién con todo en 
 
 ## Verificación
 
-1. Quedó registro de una corrida en rojo, con reporte y traza descargables.
+1. Quedó registro de una corrida en rojo, con el TRX de la configuración fallida descargable.
 2. El merge estuvo bloqueado mientras el pipeline estuvo en rojo.
 3. La decisión —corregir el cambio o corregir la prueba— está escrita en el pull request, con su
    motivo.

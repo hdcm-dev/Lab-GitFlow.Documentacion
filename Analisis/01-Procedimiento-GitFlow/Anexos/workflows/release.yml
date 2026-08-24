@@ -29,8 +29,9 @@ jobs:
     needs: verificacion
     runs-on: [self-hosted, i7infra-dev]
     timeout-minutes: 30
-    container:
-      image: mcr.microsoft.com/dotnet/sdk:10.0
+    # Sin `container:`: el runner `i7infra-dev` es él mismo un contenedor y no tiene montado el
+    # socket de Docker, así que un job con `container:` falla en *Initialize containers* antes de
+    # ejecutar un solo paso. No hace falta: el runner ya trae el SDK de .NET 10 sobre Ubuntu 24.04.
     steps:
       - uses: actions/checkout@v7
         with:

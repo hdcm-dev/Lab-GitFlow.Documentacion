@@ -55,13 +55,18 @@ git checkout -b chore/1-sembrar-aplicacion
 # Copiar por lista positiva lo que la práctica necesita. Enumerar exclusiones a mano no sirve:
 # la aplicación trae `.dotnet/` y `.navegadores/` (SDK y navegadores descargados, ~1,9 GB) que
 # ninguna lista escrita de memoria contempla.
-rsync -a --relative \
+#
+# Las dos exclusiones sí son necesarias: `src/` y `tests/` arrastran sus `bin/` y `obj/` de la
+# última compilación —medido acá, 472 MB contra 524 KB sin ellos—. Git los ignora, así que el
+# commit sale igual, pero la copia de trabajo queda con casi medio giga de salida de compilación
+# ajena que después confunde al primer `dotnet build`.
+rsync -a --relative --exclude='bin/' --exclude='obj/' \
       ../Lab-E2E.WebBlazor/./{Lab-E2E.WebBlazor.sln,pruebas.runsettings,.gitignore,README.md} \
       ../Lab-E2E.WebBlazor/./{src,tests,scripts,.github} \
       ./
 
 # Comprobación de que se sembró lo que debía y nada más:
-du -sh .          # esperado: decenas de MB, no gigabytes
+du -sh .          # esperado: menos de 1 MB; si da cientos de MB, se colaron bin/ y obj/
 test -x scripts/pruebas.sh && test -f Lab-E2E.WebBlazor.sln && echo "siembra ok"
 
 git add -A
@@ -103,7 +108,7 @@ entorno está mal», y esa distinción requiere una línea base verde.
 Los del laboratorio de E2E cubren el pull request y la línea principal. Faltan los que el
 procedimiento de release necesita: verificación de las ramas `release/*`, corte de versión y
 auditoría de convergencia. Están en [../Anexos/workflows/](../Anexos/workflows/README.md). El `ci.yml` de esa carpeta
-**reemplaza** al que vino con la aplicación: aquel solo se dispara sobre `main`.
+**reemplaza** al que vino con la aplicación: aquel se dispara sobre `main` y sobre `develop` —una rama que este modelo no usa— y ninguno de sus disparadores alcanza a `release/*`.
 
 ```bash
 # La segunda rama nace de `main` con el paso 1 ya mergeado, no de la primera rama.

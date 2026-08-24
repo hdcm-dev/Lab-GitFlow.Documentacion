@@ -44,9 +44,11 @@ los que sí. Todo `+` es un candidato a hotfix sin retorno y hay que explicarlo 
 
 La versión automatizada del mismo control está en
 [../Anexos/workflows/auditoria-convergencia.yml](../Anexos/workflows/auditoria-convergencia.yml), y
-corre exactamente este `git cherry`: compara por **contenido** y nunca lee el mensaje del commit. El
-`-x` no interviene en la detección; sirve para que una persona rastree el SHA de origen al leer la
-historia. Son dos justificaciones distintas y conviene no mezclarlas: el día que se mezclan, un
+corre exactamente este `git cherry`: la detección es por **contenido**. El mensaje del commit
+interviene después y para una sola cosa —descartar los que llevan el encabezado `Convergencia:`, la
+forma declarada de explicar un retorno resuelto a mano—, nunca para decidir si el cambio está en
+`main`. El `-x` no participa de ninguno de los dos pasos; sirve para que una persona rastree el SHA
+de origen al leer la historia. Son dos justificaciones distintas y conviene no mezclarlas: el día que se mezclan, un
 control que alerta se diagnostica buscando un `-x` que nunca tuvo nada que ver.
 
 ### 2. Higiene de ramas
