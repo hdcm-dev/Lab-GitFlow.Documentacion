@@ -172,7 +172,7 @@ por qué la verificación previa del workflow se considera suficiente. **[C]**
 | **E-02** Defecto | La prueba que reproduce el defecto queda como regresión permanente |
 | **E-04** Estabilización | Verificación dedicada de la rama de release tras cada cherry-pick |
 | **E-05** Emergencia | Verificación acotada; la matriz completa corre después, no bloquea |
-| **E-08** Rechazo | Reporte, trazas y capturas como evidencia de por qué se rechazó |
+| **E-08** Rechazo | El TRX de la corrida fallida como evidencia de por qué se rechazó |
 
 ## Ejemplo concreto
 
