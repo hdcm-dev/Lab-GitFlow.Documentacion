@@ -1,7 +1,7 @@
 ---
 doc_id: GF-09
 doc_type: guia-practica
-title: Guía práctica — escenarios de un equipo de tres personas
+title: Guía práctica de GitFlow — escenarios de un equipo de tres personas
 status: vigente
 origin: agente
 confidence: alta
@@ -11,7 +11,7 @@ audience: [desarrollo, qa, devops, po]
 traces: [GF-06, GF-07, GF-08]
 ---
 
-# Guía práctica
+# Guía práctica de GitFlow
 
 Los ocho documentos anteriores explican el modelo; este lo pone a correr. La práctica se hace sobre
 el repositorio [`Lab-GitFlow`](https://github.com/hdcm-dev/Lab-GitFlow), con la aplicación de
