@@ -11,12 +11,13 @@ nació.
 
 | Carpeta | Qué hay |
 | --- | --- |
-| [Analisis/Modelo-Ramas/](Analisis/Modelo-Ramas/) | Los nueve documentos de estudio, los cinco anexos y los tres workflows de GitHub Actions |
-| [Analisis/Guia-Practica/](Analisis/Guia-Practica/) | Los ocho escenarios ejecutables sobre `Lab-GitFlow` |
+| [Analisis/Estandares-Modelo-Ramas-Guide/](Analisis/Estandares-Modelo-Ramas-Guide/) | Los ocho documentos de estudio, los cinco anexos y los tres workflows de GitHub Actions |
+| [Analisis/GitFlow-Practice-Guide/](Analisis/GitFlow-Practice-Guide/) | Ocho escenarios ejecutables del modelo adoptado, sobre `Lab-GitFlow` |
+| [Analisis/GitHubFlow-Practice-Guide/](Analisis/GitHubFlow-Practice-Guide/) | Ocho escenarios del mismo tipo para GitHub Flow, el modelo que se comparó y no se adoptó |
 | `PROMPTs/` | Los prompts de generación y sus insumos. No versionados en este repositorio |
 
 El punto de entrada es
-[Analisis/Modelo-Ramas/README.md](Analisis/Modelo-Ramas/README.md), que
+[Analisis/Estandares-Modelo-Ramas-Guide/README.md](Analisis/Estandares-Modelo-Ramas-Guide/README.md), que
 indica por dónde empezar según el rol de quien lee: desarrollo, QA, devops, product owner o
 autoridad de cambio.
 
@@ -27,11 +28,11 @@ La guía se apoya en dos repositorios más, y conviene tener claro qué aporta c
 | Repositorio | Rol |
 | --- | --- |
 | `Lab-GitFlow.Documentacion` | Este. Explica el procedimiento y provee los workflows |
-| [`Lab-GitFlow`](https://github.com/hdcm-dev/Lab-GitFlow) | El repositorio de práctica: se siembra con la aplicación y se ejercitan los ocho escenarios sobre él |
+| [`Lab-GitFlow`](https://github.com/hdcm-dev/Lab-GitFlow) | El repositorio de práctica: se siembra con la aplicación y se ejercitan los escenarios sobre él. Las dos guías prácticas dejan estados incompatibles, así que se corre una a la vez |
 | [`Lab-E2E.WebBlazor`](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) | La aplicación bajo prueba, con su suite de extremo a extremo en C# y su definición reutilizable de pruebas en Actions |
 
 Para hacer la práctica, los tres se clonan **como hermanos** bajo un mismo directorio: los comandos
-del [escenario 00](Analisis/Guia-Practica/00-Preparacion.md) dan por
+del [escenario 00](Analisis/GitFlow-Practice-Guide/00-Preparacion.md) dan por
 sentada esa disposición.
 
 ## Cómo se lee la evidencia
@@ -41,7 +42,7 @@ discutir una convención del equipo sin discutir de paso un estándar de la indu
 
 | Marca | Significado |
 | --- | --- |
-| **[F]** | Respaldado por una fuente externa, listada en [Anexos/Fuentes.md](Analisis/Modelo-Ramas/Anexos/Fuentes.md) |
+| **[F]** | Respaldado por una fuente externa, listada en [Anexos/Fuentes.md](Analisis/Estandares-Modelo-Ramas-Guide/Anexos/Fuentes.md) |
 | **[C]** | Convención de este equipo: discutible y cambiable |
 | **[E]** | Comprobado ejecutando o leyendo algo en el propio workspace, con fecha |
 

@@ -1,7 +1,7 @@
 ---
 doc_id: GF-09
 doc_type: guia-practica
-title: Guía práctica — escenarios de un equipo de tres personas
+title: Guía práctica de GitFlow — escenarios de un equipo de tres personas
 status: vigente
 origin: agente
 confidence: alta
@@ -11,7 +11,7 @@ audience: [desarrollo, qa, devops, po]
 traces: [GF-06, GF-07, GF-08]
 ---
 
-# Guía práctica
+# Guía práctica de GitFlow
 
 Los ocho documentos anteriores explican el modelo; este lo pone a correr. La práctica se hace sobre
 el repositorio [`Lab-GitFlow`](https://github.com/hdcm-dev/Lab-GitFlow), con la aplicación de
@@ -27,7 +27,7 @@ repositorio.
 
 Para no atar los roles a las personas, la guía los nombra **I1**, **I2** e **I3**, y los rota por
 escenario. La correspondencia con los actores de
-[01 — Marco de referencia](../Modelo-Ramas/01-Marco-De-Referencia.md) es esta:
+[01 — Marco de referencia](../Estandares-Modelo-Ramas-Guide/01-Marco-De-Referencia.md) es esta:
 
 | Escenario | I1 | I2 | I3 |
 |---|---|---|---|

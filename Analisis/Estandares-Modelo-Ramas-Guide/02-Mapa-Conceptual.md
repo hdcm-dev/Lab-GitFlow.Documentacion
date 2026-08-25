@@ -47,14 +47,14 @@ flowchart TD
 
 | Escenario | Qué se hace primero | Documento |
 |---|---|---|
-| **E-01** Funcionalidad nueva | Rama corta desde la línea principal, PR en borrador | [08](08-Pull-Requests-Y-Pruebas.md) · práctica [E-01](../Guia-Practica/01-Funcionalidad-Nueva.md) |
-| **E-02** Defecto antes de liberar | Reproducir con una prueba que falle, arreglar en la línea principal | [06](06-Modelo-Adoptado.md) · práctica [E-02](../Guia-Practica/02-Defecto-Con-Release-Abierta.md) |
-| **E-03** Corte de versión | Cortar `release/x.y` lo más tarde posible y numerar la candidata | [07](07-Integracion-Y-Versionado.md) · práctica [E-03](../Guia-Practica/03-Corte-De-Release.md) |
+| **E-01** Funcionalidad nueva | Rama corta desde la línea principal, PR en borrador | [08](08-Pull-Requests-Y-Pruebas.md) · práctica [E-01](../GitFlow-Practice-Guide/01-Funcionalidad-Nueva.md) |
+| **E-02** Defecto antes de liberar | Reproducir con una prueba que falle, arreglar en la línea principal | [06](06-Modelo-Adoptado.md) · práctica [E-02](../GitFlow-Practice-Guide/02-Defecto-Con-Release-Abierta.md) |
+| **E-03** Corte de versión | Cortar `release/x.y` lo más tarde posible y numerar la candidata | [07](07-Integracion-Y-Versionado.md) · práctica [E-03](../GitFlow-Practice-Guide/03-Corte-De-Release.md) |
 | **E-04** Estabilización | Admitir por cherry-pick solo lo que corresponde, regenerar la candidata | [07](07-Integracion-Y-Versionado.md) |
-| **E-05** Emergencia | Ramar desde el **tag** de producción y planificar el retorno del arreglo | [06](06-Modelo-Adoptado.md) · práctica [E-05](../Guia-Practica/05-Emergencia-En-Produccion.md) |
-| **E-06** Versión de demostración | Construir un artefacto identificable y desechable | [07](07-Integracion-Y-Versionado.md) · práctica [E-06](../Guia-Practica/06-Version-De-Demostracion.md) |
+| **E-05** Emergencia | Ramar desde el **tag** de producción y planificar el retorno del arreglo | [06](06-Modelo-Adoptado.md) · práctica [E-05](../GitFlow-Practice-Guide/05-Emergencia-En-Produccion.md) |
+| **E-06** Versión de demostración | Construir un artefacto identificable y desechable | [07](07-Integracion-Y-Versionado.md) · práctica [E-06](../GitFlow-Practice-Guide/06-Version-De-Demostracion.md) |
 | **E-07** Mantenimiento | `chore/`, mismo circuito que cualquier cambio | [08](08-Pull-Requests-Y-Pruebas.md) |
-| **E-08** Rechazo de un cambio | Leer el reporte del pipeline antes que el código | [08](08-Pull-Requests-Y-Pruebas.md) · práctica [E-08](../Guia-Practica/04-PR-Que-Rompe-La-Regresion.md) |
+| **E-08** Rechazo de un cambio | Leer el reporte del pipeline antes que el código | [08](08-Pull-Requests-Y-Pruebas.md) · práctica [E-08](../GitFlow-Practice-Guide/04-PR-Que-Rompe-La-Regresion.md) |
 
 ## Entrada por rol
 

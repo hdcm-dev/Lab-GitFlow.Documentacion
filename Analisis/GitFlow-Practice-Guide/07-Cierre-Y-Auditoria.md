@@ -43,7 +43,7 @@ git cherry -v main release/1.0
 los que sí. Todo `+` es un candidato a hotfix sin retorno y hay que explicarlo uno por uno.
 
 La versión automatizada del mismo control está en
-[../Anexos/workflows/auditoria-convergencia.yml](../Modelo-Ramas/Anexos/workflows/auditoria-convergencia.yml), y
+[../Anexos/workflows/auditoria-convergencia.yml](../Estandares-Modelo-Ramas-Guide/Anexos/workflows/auditoria-convergencia.yml), y
 corre exactamente este `git cherry`: la detección es por **contenido**. El mensaje del commit
 interviene después y para una sola cosa —descartar los que llevan el encabezado `Convergencia:`, la
 forma declarada de explicar un retorno resuelto a mano—, nunca para decidir si el cambio está en
@@ -123,4 +123,4 @@ Estado final esperado del repositorio de práctica:
 ---
 
 Vuelve al [índice de la guía práctica](README.md) o al
-[índice general](../Modelo-Ramas/README.md).
+[índice general](../Estandares-Modelo-Ramas-Guide/README.md).

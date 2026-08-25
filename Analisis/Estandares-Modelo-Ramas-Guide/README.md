@@ -1,7 +1,7 @@
 ---
 doc_id: GF-00
 doc_type: indice
-title: Procedimiento GitFlow — guía de estudio y de práctica
+title: Estándares de modelo de ramas — guía de estudio
 status: vigente
 origin: agente
 confidence: alta
@@ -11,12 +11,13 @@ audience: [desarrollo, qa, devops, po, autoridad-de-cambio]
 traces: [GF-01, GF-02, GF-03, GF-04, GF-05, GF-06, GF-07, GF-08, GF-09]
 ---
 
-# Procedimiento GitFlow
+# Estándares de modelo de ramas
 
 Cuerpo documental para que un equipo de desarrollo entienda los modelos de ramas, adopte uno con
 criterio, y opere el ciclo de vida de sus versiones con pull requests verificados automáticamente.
-Se compone de nueve documentos de estudio, una guía práctica de ocho escenarios ejecutables sobre un
-repositorio real, y cinco anexos.
+Se compone de ocho documentos de estudio, cinco anexos más los tres workflows listos para copiar,
+y dos guías prácticas de ocho escenarios cada una, ejecutables sobre un repositorio real: la del modelo adoptado y la de GitHub Flow, que sirve de
+línea de base para medirlo.
 
 ## El problema que le dio origen
 
@@ -48,7 +49,10 @@ La guía toma entonces dos decisiones que conviene tener presentes al leerla:
    y [05](05-Como-Elegir-El-Modelo.md) explica el criterio con el que se eligió, para que la decisión
    se pueda revisar cuando cambie el contexto.
 
-Presentar el modelo adoptado como «GitFlow» habría sido cómodo y falso.
+Presentar el modelo adoptado como «GitFlow» habría sido cómodo y falso. Por eso esta carpeta se
+llama `Estandares-Modelo-Ramas-Guide` y no «Procedimiento GitFlow»: lo que documenta es la elección
+entre modelos y el que este equipo sostiene. GitFlow es uno de los comparados, y tiene además su
+propia guía práctica al lado.
 
 ## Contenido
 
@@ -62,7 +66,8 @@ Presentar el modelo adoptado como «GitFlow» habría sido cómodo y falso.
 | 06 | [Modelo adoptado](06-Modelo-Adoptado.md) | Las siete reglas, de dónde nace cada rama, guardarraíles y antipatrones |
 | 07 | [Integración y versionado](07-Integracion-Y-Versionado.md) | Ambientes, artefactos, promoción, versionado semántico, releases y versiones de demostración |
 | 08 | [Pull requests y pruebas](08-Pull-Requests-Y-Pruebas.md) | Ciclo del pull request, tamaño, protección de rama y qué verifica el pipeline en cada disparador |
-| 09 | [Guía práctica](../Guia-Practica/README.md) | Ocho escenarios ejecutables para un equipo de tres personas |
+| 09 | [Guía práctica de GitFlow](../GitFlow-Practice-Guide/README.md) | Ocho escenarios ejecutables del modelo adoptado, para un equipo de tres personas |
+| 10 | [Guía práctica de GitHub Flow](../GitHubFlow-Practice-Guide/README.md) | Ocho escenarios del modelo que **no** se adoptó, para medir contra qué se lo comparó |
 
 ### Anexos
 
