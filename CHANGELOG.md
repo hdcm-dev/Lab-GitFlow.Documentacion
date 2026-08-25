@@ -10,6 +10,23 @@ guía misma.
 
 ## [No publicado]
 
+### Agregado
+
+- Guía práctica de **GitHub Flow** en `Analisis/GitHubFlow-Practice-Guide/`: ocho escenarios con la
+  misma estructura que los de GitFlow —objetivo, precondición, pasos, qué observar, errores
+  frecuentes y verificación—, sobre el mismo repositorio de práctica. Ejercita el modelo que la
+  guía de estudio compara y descarta, porque es la línea de base contra la que se mide cualquier
+  otro: corrección hacia adelante sin rama de hotfix, feature flag en lugar de rama larga,
+  reversión como plan de contingencia, y vista previa por pull request en lugar de tag de
+  demostración. El escenario 07 cierra midiendo, con datos del propio repositorio, si al equipo le
+  sirve.
+
+### Cambiado
+
+- Las carpetas de `Analisis/` pasan a `Estandares-Modelo-Ramas-Guide/` y `GitFlow-Practice-Guide/`.
+  Se actualizaron las 38 referencias a las rutas anteriores y se enlazó la guía nueva desde el
+  README del repositorio y desde el índice de estudio.
+
 ### Corregido
 
 - La secuencia de pruebas del escenario 00 dejaba las 22 pruebas en rojo. `scripts/publicar.sh`
@@ -21,8 +38,8 @@ guía misma.
 
 ### Cambiado
 
-- La guía se reorganiza en dos carpetas hermanas: `Analisis/Modelo-Ramas/` con los
-  documentos de estudio y los anexos, y `Analisis/Guia-Practica/` con los ocho escenarios. Se van
+- La guía se reorganiza en dos carpetas hermanas: `Analisis/Estandares-Modelo-Ramas-Guide/` con los
+  documentos de estudio y los anexos, y `Analisis/GitFlow-Practice-Guide/` con los ocho escenarios. Se van
   los prefijos numéricos de las carpetas, que ordenaban un solo nivel y no decían nada. Los 27
   enlaces relativos que la mudanza rompió quedaron reparados y verificados.
 - La carpeta de estudio se llama `Modelo-Ramas` y no `Procedimiento-GitFlow`: lo que ahí se

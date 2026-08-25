@@ -155,7 +155,7 @@ partir de un hecho registrado —incidente abierto, alerta, aviso de seguridad�
 
 Un cherry-pick que no aplica limpio **no** activa nada: es un problema técnico de portabilidad del
 arreglo, y su procedimiento es resolver el conflicto puntualmente en el pull request contra la
-release —[escenario 02](../Guia-Practica/02-Defecto-Con-Release-Abierta.md)— y anotar que la ventana
+release —[escenario 02](../GitFlow-Practice-Guide/02-Defecto-Con-Release-Abierta.md)— y anotar que la ventana
 de estabilización se está haciendo larga. Confundir «cuesta portarlo» con «es una emergencia»
 convierte la excepción en el camino habitual, porque saltea la aprobación normal.
 
