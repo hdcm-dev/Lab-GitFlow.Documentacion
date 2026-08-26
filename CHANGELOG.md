@@ -10,6 +10,20 @@ guía misma.
 
 ## [No publicado]
 
+### Verificado
+
+- `ci.yml` del anexo **corrió en GitHub Actions** por primera vez, en verde, sobre el runner
+  `i7infra-dev` y con la aplicación sembrada en `Lab-GitFlow`. Encadenó verificación rápida,
+  publicación, la matriz de cuatro configuraciones de navegador, el reporte unificado y el job
+  resumen `CI aprobada`. El disparador fue un `push` a `main` y la matriz salió completa, que es lo
+  que el procedimiento reserva para lo ya integrado. Con eso caen dos supuestos que hasta ahora se
+  sostenían leyendo archivos: que los jobs arrancan sin `container:` sobre ese runner, y que el
+  contrato con el `e2e.yml` reutilizable de la aplicación es correcto.
+- El estado de verificación del índice y del anexo de workflows deja de decir «validados solo como
+  YAML». `release.yml` y `auditoria-convergencia.yml` siguen sin ejecutarse, y ahora está escrito
+  por qué: sus disparadores —un tag `v*` y un `push` a `release/**`— llegan recién con el
+  escenario 03.
+
 ### Agregado
 
 - Guía práctica de **GitHub Flow** en `Analisis/GitHubFlow-Practice-Guide/`: ocho escenarios con la
