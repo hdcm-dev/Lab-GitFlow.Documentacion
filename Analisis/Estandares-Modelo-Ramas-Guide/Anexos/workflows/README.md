@@ -85,7 +85,19 @@ el declarado: la marcada con `Convergencia:` se excluyó, la otra se reportó co
 contador del resumen dio `1` y el job terminó en `exit 1`. El camino en verde —una rama de release
 sin divergencias— dio contador `0` y salida `0`.
 
-Lo que sigue **sin verificar** es el comportamiento de los tres workflows dentro de GitHub Actions:
-requiere el runner `i7infra-dev` y un repositorio con la aplicación ya sembrada. Antes de darlos por buenos conviene correr el
-[escenario 00](../../../GitFlow-Practice-Guide/00-Preparacion.md) completo y comprobar los cuatro puntos de su
-sección de verificación.
+`ci.yml` **sí corrió en GitHub Actions**, sobre el runner `i7infra-dev` y con la aplicación sembrada
+en `Lab-GitFlow`. **[E: corrida del 2026-08-25]** Terminó en verde y encadenó lo que declara: la
+verificación rápida, la publicación de la aplicación, la matriz de pruebas con sus cuatro
+configuraciones de navegador, el reporte unificado y el job resumen `CI aprobada`. El disparador fue
+un `push` a `main`, y la matriz salió completa —los cuatro navegadores—, que es lo que el
+procedimiento reserva para lo ya integrado.
+
+Con eso quedan verificados también dos supuestos que hasta ahora se afirmaban leyendo los archivos:
+que los jobs arrancan sin `container:` sobre ese runner, y que el contrato con el workflow
+reutilizable `e2e.yml` de la aplicación es el correcto.
+
+Lo que sigue **sin verificar** son los otros dos, y por un motivo simple: sus disparadores no se
+dieron todavía. `release.yml` se activa con un tag `v*`, que produce el
+[escenario 03](../../../GitFlow-Practice-Guide/03-Corte-De-Release.md), y
+`auditoria-convergencia.yml` con un `push` a `release/**` o por horario, que llega con el mismo
+escenario. Su lógica de shell sí está comprobada, pero fuera de Actions.

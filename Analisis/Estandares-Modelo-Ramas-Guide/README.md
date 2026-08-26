@@ -119,8 +119,9 @@ estándares de la industria. Por eso la separación es explícita en todos los d
 |---|---|
 | Contenido conceptual | Fundado en las fuentes del anexo. Las de acceso pago se citan a través del documento de insumo del equipo, sin lectura directa |
 | Modelo adoptado | Toma el flujo propuesto por el equipo en `Flujo-De-Trabajo-Ramas.md` |
-| Guía práctica | **No ejecutada.** Los ocho escenarios están escritos para correrse sobre `Lab-GitFlow` con la aplicación de `Lab-E2E.WebBlazor`, pero no se corrieron en esta ejecución |
-| Workflows del anexo | **Validados solo como YAML.** Su comportamiento en GitHub Actions requiere el runner `i7infra-dev` y no se comprobó |
+| Guía práctica | **Escenario 00 ejecutado** sobre `Lab-GitFlow`: aplicación sembrada, pruebas locales en verde y workflows instalados. Falta la protección de rama, y con ella los escenarios 01 a 07 |
+| `ci.yml` del anexo | **Verificado en GitHub Actions** el 2026-08-25, en verde sobre el runner `i7infra-dev`, con la matriz completa de cuatro navegadores en un `push` a `main` |
+| `release.yml` y `auditoria-convergencia.yml` | **Sin ejecutar en Actions:** sus disparadores —un tag `v*` y un `push` a `release/**`— llegan con el escenario 03. La lógica de la auditoría sí se comprobó fuera de Actions |
 
 Lo que está verificado se afirma; lo que no, está marcado como tal. Antes de usar la guía como
 capacitación conviene ejecutar el escenario 00 completo y confirmar los cuatro puntos de su sección
