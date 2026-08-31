@@ -26,6 +26,23 @@ guía misma.
 
 ### Agregado
 
+- **`PROMPTs/`** — los tool-prompts con los que se produjo esta documentación, hasta ahora fuera del
+  repositorio. Quedan versionados junto a lo que generaron, para que cada documento se pueda leer
+  contra el pedido que le dio origen.
+  - `01-Guia-Estudio-Modelo-Ramas/Guia-Estudio.md` — encarga la guía de estudio a partir de
+    `INPUTs/Flujo-De-Trabajo-Ramas.md`, la propuesta interna del equipo: procedimientos claros de
+    pull request, integración y versionado para que un PR sobre una rama estable no rompa lo que
+    ya funcionaba.
+  - `01-Guia-Estudio-Modelo-Ramas/INPUTs/Flujo-De-Trabajo-Ramas.md` — el documento de entrada, con
+    sus afirmaciones separadas entre fundamentadas **[F]** y convenciones del equipo **[C]**.
+  - `01-Guia-Estudio-Modelo-Ramas/Mejora-Continuar-Mesa-Evaluadora.md` — el marco de la mesa
+    evaluadora: panel compuesto por señales del artefacto, informes independientes, escala de
+    evidencia, jurado de cinco, separación entre quien diseña el parche y quien lo aprueba,
+    reparación en la capa de origen y criterios de parada.
+  - `02-Debate.md/Debate.md` — las preguntas que abrieron el análisis: conventional commits, qué
+    otros modelos de ramas existen y qué estándares gobiernan el ciclo de desarrollo.
+  - `02-Debate.md/Crear-Guia-GithubFlow.md` — encarga la guía práctica de GitHub Flow como línea de
+    base contra la que medir el modelo adoptado.
 - Guía práctica de **GitHub Flow** en `Analisis/GitHubFlow-Practice-Guide/`: ocho escenarios con la
   misma estructura que los de GitFlow —objetivo, precondición, pasos, qué observar, errores
   frecuentes y verificación—, sobre el mismo repositorio de práctica. Ejercita el modelo que la

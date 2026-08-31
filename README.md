@@ -14,7 +14,7 @@ nació.
 | [Analisis/Estandares-Modelo-Ramas-Guide/](Analisis/Estandares-Modelo-Ramas-Guide/) | Los ocho documentos de estudio, los cinco anexos y los tres workflows de GitHub Actions |
 | [Analisis/GitFlow-Practice-Guide/](Analisis/GitFlow-Practice-Guide/) | Ocho escenarios ejecutables del modelo adoptado, sobre `Lab-GitFlow` |
 | [Analisis/GitHubFlow-Practice-Guide/](Analisis/GitHubFlow-Practice-Guide/) | Ocho escenarios del mismo tipo para GitHub Flow, el modelo que se comparó y no se adoptó |
-| `PROMPTs/` | Los prompts de generación y sus insumos. No versionados en este repositorio |
+| [PROMPTs/](PROMPTs/) | Los prompts de generación y sus insumos, versionados junto a lo que produjeron |
 
 El punto de entrada es
 [Analisis/Estandares-Modelo-Ramas-Guide/README.md](Analisis/Estandares-Modelo-Ramas-Guide/README.md), que
