@@ -11,15 +11,24 @@ nació.
 
 | Carpeta | Qué hay |
 | --- | --- |
-| [Analisis/Estandares-Modelo-Ramas-Guide/](Analisis/Estandares-Modelo-Ramas-Guide/) | Los ocho documentos de estudio, los cinco anexos y los tres workflows de GitHub Actions |
-| [Analisis/GitFlow-Practice-Guide/](Analisis/GitFlow-Practice-Guide/) | Ocho escenarios ejecutables del modelo adoptado, sobre `Lab-GitFlow` |
-| [Analisis/GitHubFlow-Practice-Guide/](Analisis/GitHubFlow-Practice-Guide/) | Ocho escenarios del mismo tipo para GitHub Flow, el modelo que se comparó y no se adoptó |
+| [Guides/Estandares-Modelo-Ramas-Guide/](Guides/Estandares-Modelo-Ramas-Guide/) | El documento único de estudio —`Estandares-Modelo-Ramas.md`, con sus cinco anexos adentro— y los tres workflows de GitHub Actions |
+| [Guides/GitFlow-Practice-Guide/](Guides/GitFlow-Practice-Guide/) | Ocho escenarios ejecutables del modelo adoptado, sobre `Lab-GitFlow` |
+| [Guides/GitHubFlow-Practice-Guide/](Guides/GitHubFlow-Practice-Guide/) | Ocho escenarios del mismo tipo para GitHub Flow, el modelo que se comparó y no se adoptó |
+| [Guides/GitHub-Action-Guide/](Guides/GitHub-Action-Guide/) | Guía de estudio de GitHub Actions: la herramienta con la que se implementan los workflows que el procedimiento exige |
+| [Guides/E2E-Guide/](Guides/E2E-Guide/) | Pruebas de extremo a extremo en .NET con Playwright: guía de estudio para quien empieza y guía rápida para montar el E2E de un ABM |
+| [ia-db/](ia-db/) | Base de conocimiento indexada de `Lab-Documentos`, para consultar el repositorio de práctica sin recorrerlo entero |
 | [PROMPTs/](PROMPTs/) | Los prompts de generación y sus insumos, versionados junto a lo que produjeron |
 
 El punto de entrada es
-[Analisis/Estandares-Modelo-Ramas-Guide/README.md](Analisis/Estandares-Modelo-Ramas-Guide/README.md), que
+[Guides/Estandares-Modelo-Ramas-Guide/README.md](Guides/Estandares-Modelo-Ramas-Guide/README.md), que
 indica por dónde empezar según el rol de quien lee: desarrollo, QA, devops, product owner o
 autoridad de cambio.
+
+Las tres primeras carpetas responden **qué procedimiento sigue el equipo**; la de GitHub Actions
+responde **con qué se implementa**. Quien tenga que escribir o corregir un workflow —el `ci.yml` del
+anexo de la guía de estudio, sin ir más lejos— encuentra ahí la sintaxis explicada sección por
+sección y diez escenarios completos, todos con ejemplos tomados de workflows que corren en este
+workspace.
 
 ## Los tres repositorios y cómo se relacionan
 
@@ -32,7 +41,7 @@ La guía se apoya en dos repositorios más, y conviene tener claro qué aporta c
 | [`Lab-E2E.WebBlazor`](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) | La aplicación bajo prueba, con su suite de extremo a extremo en C# y su definición reutilizable de pruebas en Actions |
 
 Para hacer la práctica, los tres se clonan **como hermanos** bajo un mismo directorio: los comandos
-del [escenario 00](Analisis/GitFlow-Practice-Guide/00-Preparacion.md) dan por
+del [escenario 00](Guides/GitFlow-Practice-Guide/Guia-Practica-GitFlow.md#2-escenario-00--preparación) dan por
 sentada esa disposición.
 
 ## Cómo se lee la evidencia
@@ -42,7 +51,7 @@ discutir una convención del equipo sin discutir de paso un estándar de la indu
 
 | Marca | Significado |
 | --- | --- |
-| **[F]** | Respaldado por una fuente externa, listada en [Anexos/Fuentes.md](Analisis/Estandares-Modelo-Ramas-Guide/Anexos/Fuentes.md) |
+| **[F]** | Respaldado por una fuente externa, listada en [Anexo E — Fuentes](Guides/Estandares-Modelo-Ramas-Guide/Estandares-Modelo-Ramas.md#anexo-e--fuentes) |
 | **[C]** | Convención de este equipo: discutible y cambiable |
 | **[E]** | Comprobado ejecutando o leyendo algo en el propio workspace, con fecha |
 
