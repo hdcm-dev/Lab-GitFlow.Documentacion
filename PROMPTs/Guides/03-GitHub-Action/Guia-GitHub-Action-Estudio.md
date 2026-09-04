@@ -1,7 +1,7 @@
 # Tool-Prompt — GitHub Action Guide
 
 > **Invocación**:
-> - Leer y ejecutar `/LAB/Lab-GitFlow.Documentacion/PROMPTs/01-Guia-Estudio-Modelo-Ramas/Guia-GitHub-Action-Estudio.md`
+> - Leer y ejecutar `/LAB/Lab-Documentos.Documentacion/PROMPTs/Guides/03-GitHub-Action/Guia-GitHub-Action-Estudio.mdd`
 >
 > Overview: GitHub Action Guide
 

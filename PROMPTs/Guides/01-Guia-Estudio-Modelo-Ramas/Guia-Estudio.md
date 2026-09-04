@@ -1,7 +1,7 @@
 # Tool-Prompt — GitFlow
 
 > **Invocación**:
-> - Leer y ejecutar `/LAB/Lab-GitFlow.Documentacion/PROMPTs/01-Guia-Estudio-Modelo-Ramas/Guia-Estudio.md`
+> - Leer y ejecutar `/LAB/Lab-Documentos.Documentacion/PROMPTs/Guides/01-Guia-Estudio-Modelo-Ramas/Guia-Estudio.md`
 >
 > Overview: GitFlow - métodologías de desarrollo y guía de entrenamiento
 

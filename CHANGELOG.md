@@ -8,6 +8,37 @@ documental que se lee entero, no un artefacto que alguien instala en una versió
 versionado semántico que la guía enseña aplica al software que ese procedimiento libera, no a la
 guía misma.
 
+## [No publicado] - 2026-09-03
+
+### Añadido
+
+- **`PROMPTs/Guides/05-Practica-Interactiva-Practica-GitHubFlow/`** — tool-prompt que ejercita la
+  guía práctica de GitHub Flow sobre `/LAB/Lab-E2E.WebBlazor.Base`, y su salida
+  `OUTPUTs/Experiencia-Ejemplo-GitHubFlow.md` (`doc_id: GHF-EXP-01`, `status: en-curso`, 746
+  líneas): bitácora de una corrida real y a mano —sin `gh` ni scripts de conveniencia—, escrita
+  mientras se practicaba, con el comando dado, lo que devolvió y qué había que aprender de ahí. No
+  reemplaza a la guía práctica: registra qué pasa cuando se la aplica a un repositorio que ya tenía
+  trabajo encima.
+
+### Cambiado
+
+- **`PROMPTs/Analisis/` se termina de renombrar a `PROMPTs/Guides/`** y cada encargo pasa a tener su
+  carpeta numerada: `01-Guia-Estudio-Modelo-Ramas/` con sus `INPUTs/`, `02-Guia-GithubFlow/`
+  —antes `02-Debate.md/`, que traía el punto en el nombre de la carpeta—, `03-GitHub-Action/` y
+  `04-Crear-E2E-Guide-Developer-Guide/`, que es el viejo `PROMPTs/Guides/01-Crear-Developer-Guide.md`
+  con su carpeta propia y la ruta de invocación corregida a este repositorio. `PROMPTs/Analisis/`
+  queda con un `.gitkeep` para los encargos que no son guías.
+
+### Quitado
+
+- **`Guides/Estandares-Modelo-Ramas-Guide/README.md`** — la presentación de la carpeta, absorbida
+  por el documento consolidado `Estandares-Modelo-Ramas.md`.
+
+### Pendiente
+
+- El `README.md` de la raíz y el cierre de `Guia-Practica-GitFlow.md` siguen enlazando a ese
+  `README.md` borrado; hay que reescribir esos dos enlaces a las anclas del documento consolidado.
+
 ## [No publicado]
 
 ### Cambiado

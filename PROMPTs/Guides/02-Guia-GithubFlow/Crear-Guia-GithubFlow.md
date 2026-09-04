@@ -1,7 +1,7 @@
 # Tool-Prompt — Crear Guia práctica
 
 > **Invocación**:
-> - Leer y ejecutar `/LAB/Lab-GitFlow.Documentacion/PROMPTs/02-Debate.md/Crear-Guia-GithubFlow.md`
+> - Leer y ejecutar `/LAB/Lab-Documentos.Documentacion/PROMPTs/Guides/02-Guia-GithubFlow/Crear-Guia-GithubFlow.md`
 >
 > Overview: Crear Guia práctica GitHubFlow
 

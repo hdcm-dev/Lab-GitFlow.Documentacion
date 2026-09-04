@@ -1,7 +1,7 @@
 # Tool-Prompt — Guía de estudio E2E en .NET
 
 > **Invocación**:
-> - Leer y ejecutar `/LAB/Lab-E2E.WebBlazor.Documentacion/PROMPTs/Guides/01-Crear-Developer-Guide.md`
+> - Leer y ejecutar `/LAB/Lab-Documentos.Documentacion/PROMPTs/Guides/04-Crear-E2E-Guide-Developer-Guide/Crear-E2E-Guide-Developer-Guide.md`
 >
 > Overview: Guía de estudio E2E en .NET
 
